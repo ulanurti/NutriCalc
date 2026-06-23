@@ -24,7 +24,7 @@ function calculateBMI() {
 
   let bmi = weight / (height * height);
 
-  let result = "";
+ let result = "";
 
 if (bmi < 18.5) {
   result = "Недостаточный вес";
@@ -32,12 +32,21 @@ if (bmi < 18.5) {
 else if (bmi < 25) {
   result = "Нормальный вес";
 }
-else {
+else if (bmi < 30) {
   result = "Избыточный вес";
+}
+else if (bmi < 35) {
+  result = "Ожирение I степени";
+}
+else if (bmi < 40) {
+  result = "Ожирение II степени";
+}
+else {
+  result = "Ожирение III степени (морбидное ожирение)";
 }
 
 document.getElementById("result").textContent =
-  "Ваш ИМТ: " + bmi.toFixed(1) + ". " + result;
+  "Ваш ИМТ: " + bmi + " " + result;"Ваш ИМТ: " + bmi.toFixed(1) + ". " + result;
 }
 </script>
 

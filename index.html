@@ -12,10 +12,22 @@
 <p>Рост (см):</p>
 <input id="height">
 
-<button>Рассчитать</button>
+<button onclick="calculateBMI()">Рассчитать</button>
 
 <p id="result"></p>
+<script>
+function calculateBMI() {
+  let weight = Number(document.getElementById("weight").value);
+  let height = Number(document.getElementById("height").value);
 
+  height = height / 100;
+
+  let bmi = weight / (height * height);
+
+  document.getElementById("result").textContent =
+    "Ваш ИМТ: " + bmi.toFixed(1);
+}
+</script>
 
 </body>
 </html>

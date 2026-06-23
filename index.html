@@ -24,8 +24,20 @@ function calculateBMI() {
 
   let bmi = weight / (height * height);
 
-  document.getElementById("result").textContent =
-    "Ваш ИМТ: " + bmi.toFixed(1);
+  let result = "";
+
+if (bmi < 18.5) {
+  result = "Недостаточный вес";
+}
+else if (bmi < 25) {
+  result = "Нормальный вес";
+}
+else {
+  result = "Избыточный вес";
+}
+
+document.getElementById("result").textContent =
+  "Ваш ИМТ: " + bmi.toFixed(1) + ". " + result;
 }
 </script>
 

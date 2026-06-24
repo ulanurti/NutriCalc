@@ -45,9 +45,9 @@ else {
   result = "Ожирение III степени (морбидное ожирение)";
 }
 
-document.getElementById("result").textContent =
-  Ваш ИМТ: " + bmi.toFixed(1) + ". " + "/n" +
-  "Категория:" + result;
+document.getElementById("result").innerHTML =
+  "Ваш ИМТ: " + bmi.toFixed(1) + "<br>" +
+  "Категория: " + result;
 }
 </script>
 

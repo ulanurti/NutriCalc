@@ -16,6 +16,7 @@
 
 <p id="result"></p>
 <script>
+  let history=[];
 function calculateBMI() {
   let weight = Number(document.getElementById("weight").value);
   let height = Number(document.getElementById("height").value);
@@ -23,6 +24,7 @@ function calculateBMI() {
   height = height / 100;
 
   let bmi = weight / (height * height);
+  history.push(bmi);
 
  let result = "";
 

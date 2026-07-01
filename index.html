@@ -13,7 +13,7 @@
 <input id="height">
 
 <button onclick="calculateBMI()">Рассчитать</button>
-
+<button onclick="showHistory()">Показать историю</button>
 <p id="result"></p>
 <script>
   let history=[];
@@ -50,6 +50,11 @@ else {
 document.getElementById("result").innerHTML =
   "Ваш ИМТ: " + bmi.toFixed(1) + "<br>" +
   "Категория: " + result;
+}
+  function showHistory() {
+  for (let i = 0; i < history.length; i++) {
+    console.log(history[i]);
+  }
 }
 </script>
 

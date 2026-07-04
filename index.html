@@ -27,7 +27,12 @@ function calculateBMI() {
   height = height / 100;
 
   let bmi = weight / (height * height);
-  history.push(bmi);
+  history.push({
+  bmi: bmi,
+  waist: waist,
+  hips: hips,
+  shoulders: shoulders
+});
 
  let result = "";
 

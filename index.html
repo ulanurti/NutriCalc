@@ -28,7 +28,7 @@
   <p>История измерений:</p>
 <div id="history"></div>
 <script>
-  let history=[];
+  let consultation=[];
 function calculateBMI() {
   let weight = Number(document.getElementById("weight").value);
   let height = Number(document.getElementById("height").value);
@@ -38,13 +38,20 @@ let shoulders = Number(document.getElementById("shoulders").value);
   height = height / 100;
 
   let bmi = weight / (height * height);
-  history.push({
-  bmi: bmi,
-  waist: waist,
-  hips: hips,
-  shoulders: shoulders
+  let patient = {
+    name: "",
+    age: "",
+    height: ""
+    consultations: []
+}
+  patient.consultations.push({
+    date: new Date(),
+    weight: weight,
+    waist: waist,
+    hips: hips,
+    shoulders: shoulders,
+    bmi: bmi
 });
-
  let result = "";
 
 if (bmi < 18.5) {
@@ -70,14 +77,14 @@ document.getElementById("result").innerHTML =
   "Ваш ИМТ: " + bmi.toFixed(1) + "<br>" +
   "Категория: " + result;
 }
-  function showHistory() {
+  function showconsultation() {
   let text = "";
 
-  for (let i = 0; i < history.length; i++) {
-    text = text + "Измерение " + (i + 1) + ": " + history[i].toFixed(1) + "<br>";
+  for (let i = 0; i < consultation.length; i++) {
+    text = text + "Измерение " + (i + 1) + ": " + consultation[i].toFixed(1) + "<br>";
   }
 
-  document.getElementById("history").innerHTML = text;
+  document.getElementById("consultation").innerHTML = text;
 }
 
 </script>

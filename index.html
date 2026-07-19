@@ -76,20 +76,21 @@ document.getElementById("result").innerHTML =
   "Ваш ИМТ: " + bmi.toFixed(1) + "<br>" +
   "Категория: " + result;
 }
-  function showconsultation() {
-  let text = "";
+  function showConsultation() {
+    let text = "";
 
-  for (let i = 0; i < patient.consultations.length; i++)
-    text = text + "Измерение " + (i + 1) + ": " + consultation[i].toFixed(1) + "<br>";
-  }
-let c = patient.consultations[i];
-  document.getElementById("history").innerHTML = text;
-}
-text +=
-"Консультация " + (i + 1) + "<br>" +
-"Вес: " + c.weight + "<br>" +
-"ИМТ: " + c.bmi.toFixed(1) + "<br>" +
-"Талия: " + c.waist + "<br><br>";
+    for (let i = 0; i < patient.consultations.length; i++) {
+
+        let c = patient.consultations[i];
+
+        text +=
+            "Консультация " + (i + 1) + "<br>" +
+            "Вес: " + c.weight + "<br>" +
+            "ИМТ: " + c.bmi.toFixed(1) + "<br>" +
+            "Талия: " + c.waist + "<br><br>";
+    }
+
+    document.getElementById("history").innerHTML = text;
 </script>
 
 </body>

@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>NutriCalc</title>
+    <title>NutriCalc</title>
 </head>
 
 <body>
-  
+
 <p>Вес (кг):</p>
 <input id="weight">
 
 <p>Рост (см):</p>
 <input id="height">
-  
+
 <p>Живот (см):</p>
 <input id="waist">
 
@@ -20,63 +20,76 @@
 
 <p>Плечи (см):</p>
 <input id="shoulders">
-  
+
 <button onclick="calculateBMI()">Рассчитать</button>
-<button onclick="showconsultation()">Показать историю</button>
-  <button onclick="showGraph()">Показать график</button>
+<button onclick="showConsultation()">Показать историю</button>
+<button onclick="showGraph()">Показать график</button>
+
 <p id="result"></p>
-  <p>История измерений:</p>
+
+<p>История измерений:</p>
 <div id="history"></div>
+
 <script>
-    let bmi = weight / (height * height);
-  let patient = {
+
+let patient = {
     name: "",
     age: "",
-    height: "",
+    height: 0,
     consultations: []
-}
-  patient.consultations.push({
-    date: new Date(),
-    weight: weight,
-    waist: waist,
-    hips: hips,
-    shoulders: shoulders,
-    bmi: bmi
-});
+};
+
 function calculateBMI() {
-  let weight = Number(document.getElementById("weight").value);
-  let height = Number(document.getElementById("height").value);
-let waist = Number(document.getElementById("waist").value);
-let hips = Number(document.getElementById("hips").value);
-let shoulders = Number(document.getElementById("shoulders").value);
-  height = height / 100;
 
- let result = "";
+    let weight = Number(document.getElementById("weight").value);
+    let height = Number(document.getElementById("height").value);
+    let waist = Number(document.getElementById("waist").value);
+    let hips = Number(document.getElementById("hips").value);
+    let shoulders = Number(document.getElementById("shoulders").value);
 
-if (bmi < 18.5) {
-  result = "Недостаточный вес";
-}
-else if (bmi < 25) {
-  result = "Нормальный вес";
-}
-else if (bmi < 30) {
-  result = "Избыточный вес";
-}
-else if (bmi < 35) {
-  result = "Ожирение I степени";
-}
-else if (bmi < 40) {
-  result = "Ожирение II степени";
-}
-else {
-  result = "Ожирение III степени (морбидное ожирение)";
+    height = height / 100;
+
+    let bmi = weight / (height * height);
+
+    patient.height = height;
+
+    patient.consultations.push({
+        date: new Date(),
+        weight: weight,
+        waist: waist,
+        hips: hips,
+        shoulders: shoulders,
+        bmi: bmi
+    });
+
+    let result = "";
+
+    if (bmi < 18.5) {
+        result = "Недостаточный вес";
+    }
+    else if (bmi < 25) {
+        result = "Нормальный вес";
+    }
+    else if (bmi < 30) {
+        result = "Избыточный вес";
+    }
+    else if (bmi < 35) {
+        result = "Ожирение I степени";
+    }
+    else if (bmi < 40) {
+        result = "Ожирение II степени";
+    }
+    else {
+        result = "Ожирение III степени (морбидное ожирение)";
+    }
+
+    document.getElementById("result").innerHTML =
+        "Ваш ИМТ: " + bmi.toFixed(1) + "<br>" +
+        "Категория: " + result;
 }
 
-document.getElementById("result").innerHTML =
-  "Ваш ИМТ: " + bmi.toFixed(1) + "<br>" +
-  "Категория: " + result;
-}
-  function showConsultation() {
+function showConsultation() {
+
     let text = "";
 
     for (let i = 0; i < patient.consultations.length; i++) {
@@ -84,13 +97,21 @@ document.getElementById("result").innerHTML =
         let c = patient.consultations[i];
 
         text +=
-            "Консультация " + (i + 1) + "<br>" +
-            "Вес: " + c.weight + "<br>" +
+            "<b>Консультация " + (i + 1) + "</b><br>" +
+            "Вес: " + c.weight + " кг<br>" +
             "ИМТ: " + c.bmi.toFixed(1) + "<br>" +
-            "Талия: " + c.waist + "<br><br>";
+            "Талия: " + c.waist + " см<br>" +
+            "Бёдра: " + c.hips + " см<br>" +
+            "Плечо: " + c.shoulders + " см<br><br>";
     }
 
     document.getElementById("history").innerHTML = text;
+}
+
+function showGraph() {
+    alert("График мы добавим на следующем этапе.");
+}
+
 </script>
 
 </body>

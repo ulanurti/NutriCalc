@@ -28,7 +28,7 @@
   <p>История измерений:</p>
 <div id="history"></div>
 <script>
-  let consultation=[];
+    let bmi = weight / (height * height);
   let patient = {
     name: "",
     age: "",
@@ -50,7 +50,7 @@ let waist = Number(document.getElementById("waist").value);
 let hips = Number(document.getElementById("hips").value);
 let shoulders = Number(document.getElementById("shoulders").value);
   height = height / 100;
-  let bmi = weight / (height * height);
+
  let result = "";
 
 if (bmi < 18.5) {

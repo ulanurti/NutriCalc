@@ -79,13 +79,17 @@ document.getElementById("result").innerHTML =
   function showconsultation() {
   let text = "";
 
-  for (let i = 0; i < consultation.length; i++) {
+  for (let i = 0; i < patient.consultations.length; i++)
     text = text + "Измерение " + (i + 1) + ": " + consultation[i].toFixed(1) + "<br>";
   }
-
+let c = patient.consultations[i];
   document.getElementById("history").innerHTML = text;
 }
-
+text +=
+"Консультация " + (i + 1) + "<br>" +
+"Вес: " + c.weight + "<br>" +
+"ИМТ: " + c.bmi.toFixed(1) + "<br>" +
+"Талия: " + c.waist + "<br><br>";
 </script>
 
 </body>

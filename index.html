@@ -22,22 +22,13 @@
 <input id="shoulders">
   
 <button onclick="calculateBMI()">Рассчитать</button>
-<button onclick="showHistory()">Показать историю</button>
+<button onclick="showconsultation()">Показать историю</button>
   <button onclick="showGraph()">Показать график</button>
 <p id="result"></p>
   <p>История измерений:</p>
 <div id="history"></div>
 <script>
   let consultation=[];
-function calculateBMI() {
-  let weight = Number(document.getElementById("weight").value);
-  let height = Number(document.getElementById("height").value);
-let waist = Number(document.getElementById("waist").value);
-let hips = Number(document.getElementById("hips").value);
-let shoulders = Number(document.getElementById("shoulders").value);
-  height = height / 100;
-
-  let bmi = weight / (height * height);
   let patient = {
     name: "",
     age: "",
@@ -52,6 +43,14 @@ let shoulders = Number(document.getElementById("shoulders").value);
     shoulders: shoulders,
     bmi: bmi
 });
+function calculateBMI() {
+  let weight = Number(document.getElementById("weight").value);
+  let height = Number(document.getElementById("height").value);
+let waist = Number(document.getElementById("waist").value);
+let hips = Number(document.getElementById("hips").value);
+let shoulders = Number(document.getElementById("shoulders").value);
+  height = height / 100;
+  let bmi = weight / (height * height);
  let result = "";
 
 if (bmi < 18.5) {

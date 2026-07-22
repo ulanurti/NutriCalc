@@ -53,7 +53,7 @@ function calculateBMI() {
         "Категория: " + result;
 }
 function calculateIdealWeight(height, gender){
-
+целевой вес по броку
     let weight;
 
     if(gender === "male"){
@@ -65,6 +65,34 @@ function calculateIdealWeight(height, gender){
     }
 
     return weight;
+целевой вес по дельвину
+let devine;
+
+    if (gender === "male") {
+        devine = 50 + 0.9 * (height - 152.4);
+    } 
+    
+    else if (gender === "female") {
+        devine = 45.5 + 0.9 * (height - 152.4);
+    }
+
+
+    // Целевой вес по ИМТ 21-23
+
+    let heightM = height / 100;
+
+    let bmiMin = 21;
+    let bmiMax = 23;
+
+    let targetMin = bmiMin * (heightM * heightM);
+    let targetMax = bmiMax * (heightM * heightM);
+
+
+    return {
+        devine: devine.toFixed(1),
+        targetMin: targetMin.toFixed(1),
+        targetMax: targetMax.toFixed(1)
+    };
 }
 function showConsultation() {
 

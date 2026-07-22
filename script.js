@@ -27,3 +27,52 @@ function calculateBMI() {
         shoulders: shoulders,
         bmi: bmi
     });
+    let result = "";
+
+    if (bmi < 18.5) {
+        result = "Недостаточный вес";
+    }
+    else if (bmi < 25) {
+        result = "Нормальный вес";
+    }
+    else if (bmi < 30) {
+        result = "Избыточный вес";
+    }
+    else if (bmi < 35) {
+        result = "Ожирение I степени";
+    }
+    else if (bmi < 40) {
+        result = "Ожирение II степени";
+    }
+    else {
+        result = "Ожирение III степени (морбидное ожирение)";
+    }
+
+    document.getElementById("result").innerHTML =
+        "Ваш ИМТ: " + bmi.toFixed(1) + "<br>" +
+        "Категория: " + result;
+}
+
+function showConsultation() {
+
+    let text = "";
+
+    for (let i = 0; i < patient.consultations.length; i++) {
+
+        let c = patient.consultations[i];
+
+        text +=
+            "<b>Консультация " + (i + 1) + "</b><br>" +
+            "Вес: " + c.weight + " кг<br>" +
+            "ИМТ: " + c.bmi.toFixed(1) + "<br>" +
+            "Талия: " + c.waist + " см<br>" +
+            "Бёдра: " + c.hips + " см<br>" +
+            "Плечо: " + c.shoulders + " см<br><br>";
+    }
+
+    document.getElementById("history").innerHTML = text;
+}
+
+function showGraph() {
+    alert("График мы добавим на следующем этапе.");
+}

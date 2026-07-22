@@ -52,7 +52,20 @@ function calculateBMI() {
         "Ваш ИМТ: " + bmi.toFixed(1) + "<br>" +
         "Категория: " + result;
 }
+function calculateIdealWeight(height, gender){
 
+    let weight;
+
+    if(gender === "male"){
+        weight = height - 100;
+    }
+
+    else if(gender === "female"){
+        weight = height - 110;
+    }
+
+    return weight;
+}
 function showConsultation() {
 
     let text = "";

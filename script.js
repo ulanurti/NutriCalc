@@ -52,51 +52,53 @@ function calculateBMI() {
         "Ваш ИМТ: " + bmi.toFixed(1) + "<br>" +
         "Категория: " + result;
 }
-function calculateIdealWeight(height, gender){
-целевой вес по броку
-    let weight;
+function calculateIdealWeight(height, gender) {
 
-    if(gender === "male"){
-        weight = height - 100;
+    // вес по Броку
+    let brock;
+
+    if (gender === "male") {
+        brock = height - 100;
     }
 
-    else if(gender === "female"){
-        weight = height - 110;
+    else if (gender === "female") {
+        brock = height - 110;
     }
 
-    return weight;
-целевой вес по дельвину
-let devine;
+
+    // вес по Девину
+    let devine;
 
     if (gender === "male") {
         devine = 50 + 0.9 * (height - 152.4);
-    } 
-    
+    }
+
     else if (gender === "female") {
         devine = 45.5 + 0.9 * (height - 152.4);
     }
 
 
-    // Целевой вес по ИМТ 21-23
+    // вес по ИМТ 21-23
 
     let heightM = height / 100;
 
-    let bmiMin = 21;
-    let bmiMax = 23;
-
-    let targetMin = bmiMin * (heightM * heightM);
-    let targetMax = bmiMax * (heightM * heightM);
+    let targetMin = 21 * (heightM * heightM);
+    let targetMax = 23 * (heightM * heightM);
 
 
     return {
+        brock: brock.toFixed(1),
         devine: devine.toFixed(1),
         targetMin: targetMin.toFixed(1),
         targetMax: targetMax.toFixed(1)
     };
-    let result = calculateIdealWeight(170, "female");
+}
+
+
+// проверка функции
+let result = calculateIdealWeight(170, "female");
 
 console.log(result);
-}
 function showConsultation() {
 
     let text = "";

@@ -93,6 +93,9 @@ let devine;
         targetMin: targetMin.toFixed(1),
         targetMax: targetMax.toFixed(1)
     };
+    let result = calculateIdealWeight(170, "female");
+
+console.log(result);
 }
 function showConsultation() {
 

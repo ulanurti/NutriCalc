@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <link rel="stylesheet" href="style.css">
     <title>NutriCalc</title>
@@ -7,37 +8,52 @@
 
 <body>
 
-<p>Вес (кг):</p>
-<input id="weight">
+    <p>Вес (кг):</p>
+    <input id="weight">
 
-<p>Рост (см):</p>
-<input id="height">
-    
-<select id="gender">
-    <option value="female">Женщина</option>
-    <option value="male">Мужчина</option>
-</select>
-<p>Талия</p> (см):</p>
-<input id="waist">
+    <p>Рост (см):</p>
+    <input id="height">
 
-<p>Бёдра (см):</p>
-<input id="hips">
+    <p>Пол:</p>
+    <select id="gender">
+        <option value="female">Женщина</option>
+        <option value="male">Мужчина</option>
+    </select>
 
-<p>Плечи (см):</p>
-<input id="shoulders">
-    
-<button onclick="calculateIdealWeight()">Расчитать идеальный вес</button>
-<button onclick="calculateBMI()">Рассчитать</button>
-<button onclick="showConsultation()">Показать историю</button>
-<button onclick="showGraph()">Показать график</button>
-    
+    <p>Талия (см):</p>
+    <input id="waist">
 
-<p id="result"></p>
+    <p>Бёдра (см):</p>
+    <input id="hips">
 
+    <p>Плечи (см):</p>
+    <input id="shoulders">
 
-<p>История измерений:</p>
-<div id="history"></div>
-<script src="script.js"></script>
+    <button onclick="calculateIdealWeight()">
+        Рассчитать идеальный вес
+    </button>
+
+    <button onclick="calculateBMI()">
+        Рассчитать ИМТ
+    </button>
+
+    <button onclick="showConsultation()">
+        Показать историю
+    </button>
+
+    <button onclick="showGraph()">
+        Показать график
+    </button>
+
+    <p id="result"></p>
+
+    <p id="idealWeight"></p>
+
+    <p>История измерений:</p>
+    <div id="history"></div>
+
+    <script src="script.js"></script>
 
 </body>
+
 </html>

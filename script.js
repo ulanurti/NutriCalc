@@ -53,7 +53,8 @@ function calculateBMI() {
         "Категория: " + result;
 }
 function calculateIdealWeight(height, gender) {
-
+let height = Number(document.getElementById("height").value);
+let gender = document.getElementById("gender").value;
     // вес по Броку
     let brock;
 
@@ -95,10 +96,6 @@ function calculateIdealWeight(height, gender) {
 }
 
 
-// проверка функции
-let result = calculateIdealWeight(170, "female");
-
-console.log(result);
 function showConsultation() {
 
     let text = "";

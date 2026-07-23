@@ -52,50 +52,48 @@ function calculateBMI() {
         "Ваш ИМТ: " + bmi.toFixed(1) + "<br>" +
         "Категория: " + result;
 }
-function calculateIdealWeight(height, gender) {
-let height = Number(document.getElementById("height").value);
-let gender = document.getElementById("gender").value;
-    // вес по Броку
+function calculateIdealWeight() {
+
+    let height = Number(document.getElementById("height").value);
+    let gender = document.getElementById("gender").value;
+
+    // Вес по Броку
     let brock;
 
     if (gender === "male") {
         brock = height - 100;
     }
-
     else if (gender === "female") {
         brock = height - 110;
     }
 
-
-    // вес по Девину
+    // Вес по Девину
     let devine;
 
     if (gender === "male") {
         devine = 50 + 0.9 * (height - 152.4);
     }
-
     else if (gender === "female") {
         devine = 45.5 + 0.9 * (height - 152.4);
     }
 
-
-    // вес по ИМТ 21-23
+    // Целевой вес по ИМТ 21–23
 
     let heightM = height / 100;
 
     let targetMin = 21 * (heightM * heightM);
     let targetMax = 23 * (heightM * heightM);
 
+    // Вывод результата
 
-    return {
-        brock: brock.toFixed(1),
-        devine: devine.toFixed(1),
-        targetMin: targetMin.toFixed(1),
-        targetMax: targetMax.toFixed(1)
-    };
+    document.getElementById("idealWeight").innerHTML =
+        "<b>Идеальный вес</b><br>" +
+        "По Броку: " + brock.toFixed(1) + " кг<br>" +
+        "По Девину: " + devine.toFixed(1) + " кг<br>" +
+        "Целевой вес (ИМТ 21): " + targetMin.toFixed(1) + " кг<br>" +
+        "Целевой вес (ИМТ 23): " + targetMax.toFixed(1) + " кг";
 }
-
-
+ 
 function showConsultation() {
 
     let text = "";

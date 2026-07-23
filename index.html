@@ -12,6 +12,9 @@
 
 <p>Рост (см):</p>
 <input id="height">
+    
+<p>Пол (см):</p>
+<input id=gender">
 
 <p>Талия</p> (см):</p>
 <input id="waist">
@@ -21,12 +24,15 @@
 
 <p>Плечи (см):</p>
 <input id="shoulders">
-
+    
+<button onclick="idealWeight(height, gender)">Расчитать идеальный вес</button>
 <button onclick="calculateBMI()">Рассчитать</button>
 <button onclick="showConsultation()">Показать историю</button>
 <button onclick="showGraph()">Показать график</button>
+    
 
 <p id="result"></p>
+<p id="idealWeight"></p> 
 
 <p>История измерений:</p>
 <div id="history"></div>

@@ -1,4 +1,4 @@
-<у!<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -19,17 +19,28 @@
     <p>Возраст (годы):</p>
     <input id="age" type="number">
 
+
     <p>Пол:</p>
     <select id="gender">
-        <option value="female">Женщина</option>
-        <option value="male">Мужчина</option>
+
+        <option value="female">
+            Женщина
+        </option>
+
+        <option value="male">
+            Мужчина
+        </option>
+
     </select>
+
 
     <p>Талия (см):</p>
     <input id="waist" type="number">
 
+
     <p>Бёдра (см):</p>
     <input id="hips" type="number">
+
 
     <p>Плечи (см):</p>
     <input id="shoulders" type="number">
@@ -37,17 +48,16 @@
 
     <br><br>
 
-    <button onclick="calculateBMI()">
-        Рассчитать консультацию
+
+    <button onclick="calculateAll()">
+        Рассчитать
     </button>
 
-    <button onclick="calculateIdealWeight()">
-        Рассчитать идеальный вес
-    </button>
 
     <button onclick="showConsultation()">
         Показать историю
     </button>
+
 
     <button onclick="showGraph()">
         Показать график
@@ -58,6 +68,7 @@
 
     <p id="result"></p>
 
+
     <p id="idealWeight"></p>
 
 
@@ -67,6 +78,7 @@
 
 
     <script src="script.js"></script>
+
 
 </body>
 

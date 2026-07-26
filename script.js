@@ -8,7 +8,8 @@ let patient = {
 function calculateBMI() {
 
     let weight = Number(document.getElementById("weight").value);
-    let height = Number(document.getElementById("height").value);
+    let heightCm = Number(document.getElementById("height").value);
+    let height = heightCm / 100;
     let waist = Number(document.getElementById("waist").value);
     let hips = Number(document.getElementById("hips").value);
     let shoulders = Number(document.getElementById("shoulders").value);

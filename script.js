@@ -97,7 +97,8 @@ function calculateIdealWeight() {
  function calculateBMR() {
 
     let weight = Number(document.getElementById("weight").value);
-    let height = Number(document.getElementById("height").value);
+    let heightCm = Number(document.getElementById("height").value);
+    let height = heightCm / 100;
     let age = Number(document.getElementById("age").value);
     let gender = document.getElementById("gender").value;
 
@@ -109,8 +110,10 @@ function calculateIdealWeight() {
         bmr = 10 * weight + 6.25 * height - 5 * age - 161;
     }
 
-    document.getElementById("result").innerHTML +=
-        "<br>Основной обмен: " + Math.round(bmr) + " ккал";
+    document.getElementById("result").innerHTML =
+"ИМТ: " + bmi.toFixed(1) + "<br>" +
+status + "<br><br>" +
+"Основной обмен: " + Math.round(bmr) + " ккал/сут";
 function showConsultation() {
 
     let text = "";

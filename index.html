@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<у!<!DOCTYPE html>
 <html>
 
 <head>
@@ -8,13 +8,16 @@
 
 <body>
 
+    <h1>NutriCalc</h1>
+
     <p>Вес (кг):</p>
-    <input id="weight">
+    <input id="weight" type="number">
 
     <p>Рост (см):</p>
-    <input id="height">
-    <p> Возраст (годы):</p>
-    <input type="number" id="age"><br><br>
+    <input id="height" type="number">
+
+    <p>Возраст (годы):</p>
+    <input id="age" type="number">
 
     <p>Пол:</p>
     <select id="gender">
@@ -23,24 +26,24 @@
     </select>
 
     <p>Талия (см):</p>
-    <input id="waist">
+    <input id="waist" type="number">
 
     <p>Бёдра (см):</p>
-    <input id="hips">
+    <input id="hips" type="number">
 
     <p>Плечи (см):</p>
-    <input id="shoulders">
+    <input id="shoulders" type="number">
+
+
+    <br><br>
+
+    <button onclick="calculateBMI()">
+        Рассчитать консультацию
+    </button>
 
     <button onclick="calculateIdealWeight()">
         Рассчитать идеальный вес
     </button>
-
-    <button onclick="calculateBMI()">
-        Рассчитать ИМТ
-    </button>
-    <button onclick="calculateBMR()">
-Рассчитать основной обмен
-</button>
 
     <button onclick="showConsultation()">
         Показать историю
@@ -50,12 +53,18 @@
         Показать график
     </button>
 
+
+    <h2>Результаты:</h2>
+
     <p id="result"></p>
 
     <p id="idealWeight"></p>
 
-    <p>История измерений:</p>
+
+    <h2>История измерений:</h2>
+
     <div id="history"></div>
+
 
     <script src="script.js"></script>
 

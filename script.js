@@ -5,136 +5,235 @@ let patient = {
     consultations: []
 };
 
+
+// Главная кнопка "Рассчитать"
+
+function calculateAll() {
+
+    let bmiResult = calculateBMI();
+    let bmrResult = calculateBMR();
+
+    calculateIdealWeight();
+
+    document.getElementById("result").innerHTML =
+        "<b>Результаты консультации</b><br><br>" +
+        "ИМТ: " + bmiResult.bmi.toFixed(1) + "<br>" +
+        "Категория: " + bmiResult.category + "<br><br>" +
+        "Основной обмен: " + Math.round(bmrResult) + " ккал/сут";
+}
+
+
+
+// Расчёт ИМТ
+
 function calculateBMI() {
 
     let weight = Number(document.getElementById("weight").value);
+
+    // Рост вводится в сантиметрах
     let heightCm = Number(document.getElementById("height").value);
-    let height = heightCm / 100;
-    let age = Number(document.getElementById("age").value);
-    let gender = document.getElementById("gender").value;
+
+    // Для ИМТ переводим в метры
+    let heightM = heightCm / 100;
+
 
     let waist = Number(document.getElementById("waist").value);
     let hips = Number(document.getElementById("hips").value);
     let shoulders = Number(document.getElementById("shoulders").value);
 
-    let bmi = weight / (height * height);
 
-    let result = "";
+    let bmi = weight / (heightM * heightM);
+
+
+    let category = "";
+
 
     if (bmi < 18.5) {
-        result = "Недостаточный вес";
+        category = "Недостаточный вес";
     }
     else if (bmi < 25) {
-        result = "Нормальный вес";
+        category = "Нормальный вес";
     }
     else if (bmi < 30) {
-        result = "Избыточный вес";
+        category = "Избыточный вес";
     }
     else if (bmi < 35) {
-        result = "Ожирение I степени";
+        category = "Ожирение I степени";
     }
     else if (bmi < 40) {
-        result = "Ожирение II степени";
+        category = "Ожирение II степени";
     }
     else {
-        result = "Ожирение III степени (морбидное ожирение)";
+        category = "Ожирение III степени";
     }
 
-    // Основной обмен (формула Миффлина — Сан Жеора)
 
-    let bmr;
-
-    if (gender === "male") {
-        bmr = 10 * weight + 6.25 * heightCm - 5 * age + 5;
-    }
-    else {
-        bmr = 10 * weight + 6.25 * heightCm - 5 * age - 161;
-    }
-
-    patient.age = age;
     patient.height = heightCm;
 
+
     patient.consultations.push({
+
         date: new Date(),
         weight: weight,
+        height: heightCm,
         waist: waist,
         hips: hips,
         shoulders: shoulders,
-        bmi: bmi,
-        bmr: bmr
+        bmi: bmi
+
     });
 
-    document.getElementById("result").innerHTML =
-        "<b>Результаты</b><br><br>" +
-        "ИМТ: " + bmi.toFixed(1) + "<br>" +
-        "Категория: " + result + "<br>" +
-        "Основной обмен: " + Math.round(bmr) + " ккал/сут";
+
+    return {
+
+        bmi: bmi,
+        category: category
+
+    };
+
 }
+
+
+
+// Расчёт основного обмена BMR
+
+function calculateBMR() {
+
+    let weight = Number(document.getElementById("weight").value);
+
+    // Здесь нужна высота в сантиметрах
+    let heightCm = Number(document.getElementById("height").value);
+
+    let age = Number(document.getElementById("age").value);
+
+    let gender = document.getElementById("gender").value;
+
+
+    let bmr;
+
+
+    if (gender === "male") {
+
+        bmr =
+            10 * weight +
+            6.25 * heightCm -
+            5 * age +
+            5;
+
+    }
+    else {
+
+        bmr =
+            10 * weight +
+            6.25 * heightCm -
+            5 * age -
+            161;
+
+    }
+
+
+    return bmr;
+
+}
+
+
+
+// Расчёт идеального веса
 
 function calculateIdealWeight() {
 
-    let height = Number(document.getElementById("height").value);
+
+    // Рост берём в сантиметрах
+    let heightCm = Number(document.getElementById("height").value);
+
     let gender = document.getElementById("gender").value;
 
-    // Вес по Броку
 
     let brock;
-
-    if (gender === "male") {
-        brock = height - 100;
-    }
-    else {
-        brock = height - 110;
-    }
-
-    // Вес по Девину
-
     let devine;
 
+
     if (gender === "male") {
-        devine = 50 + 0.9 * (height - 152.4);
+
+        brock = heightCm - 100;
+
+        devine =
+            50 + 0.9 * (heightCm - 152.4);
+
     }
     else {
-        devine = 45.5 + 0.9 * (height - 152.4);
+
+        brock = heightCm - 110;
+
+        devine =
+            45.5 + 0.9 * (heightCm - 152.4);
+
     }
 
-    // Целевой вес по ИМТ 21–23
 
-    let heightM = height / 100;
+    // Для ИМТ нужен рост в метрах
 
-    let targetMin = 21 * heightM * heightM;
-    let targetMax = 23 * heightM * heightM;
+    let heightM = heightCm / 100;
+
+
+    let targetMin =
+        21 * heightM * heightM;
+
+    let targetMax =
+        23 * heightM * heightM;
+
+
 
     document.getElementById("idealWeight").innerHTML =
-        "<b>Идеальный вес</b><br><br>" +
+
+        "<b>Идеальный вес</b><br>" +
         "По Броку: " + brock.toFixed(1) + " кг<br>" +
         "По Девину: " + devine.toFixed(1) + " кг<br>" +
-        "ИМТ 21: " + targetMin.toFixed(1) + " кг<br>" +
-        "ИМТ 23: " + targetMax.toFixed(1) + " кг";
+        "Диапазон ИМТ 21-23: " +
+        targetMin.toFixed(1) +
+        " - " +
+        targetMax.toFixed(1) +
+        " кг";
+
 }
+
+
+
+// История консультаций
 
 function showConsultation() {
 
     let text = "";
 
+
     for (let i = 0; i < patient.consultations.length; i++) {
 
         let c = patient.consultations[i];
 
+
         text +=
+
             "<b>Консультация " + (i + 1) + "</b><br>" +
-            "Дата: " + c.date.toLocaleDateString() + "<br>" +
             "Вес: " + c.weight + " кг<br>" +
+            "Рост: " + c.height + " см<br>" +
             "ИМТ: " + c.bmi.toFixed(1) + "<br>" +
-            "Основной обмен: " + Math.round(c.bmr) + " ккал/сут<br>" +
             "Талия: " + c.waist + " см<br>" +
             "Бёдра: " + c.hips + " см<br>" +
             "Плечо: " + c.shoulders + " см<br><br>";
+
     }
 
+
     document.getElementById("history").innerHTML = text;
+
 }
 
+
+
+// Пока заглушка
+
 function showGraph() {
-    alert("График мы добавим на следующем этапе.");
+
+    alert("График добавим следующим этапом");
+
 }

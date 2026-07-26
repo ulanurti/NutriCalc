@@ -16,7 +16,7 @@ function calculateBMI() {
 
     let bmi = weight / (height * height);
 
-    patient.height = height;
+   patient.height = heightCm;
 
     patient.consultations.push({
         date: new Date(),

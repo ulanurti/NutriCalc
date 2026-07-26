@@ -14,8 +14,6 @@ function calculateBMI() {
     let hips = Number(document.getElementById("hips").value);
     let shoulders = Number(document.getElementById("shoulders").value);
 
-    height = height / 100;
-
     let bmi = weight / (height * height);
 
     patient.height = height;
@@ -48,11 +46,20 @@ function calculateBMI() {
     else {
         result = "Ожирение III степени (морбидное ожирение)";
     }
+let age = Number(document.getElementById("age").value);
+let gender = document.getElementById("gender").value;
 
-    document.getElementById("result").innerHTML =
-        "Ваш ИМТ: " + bmi.toFixed(1) + "<br>" +
-        "Категория: " + result;
+let bmr;
+
+if (gender === "male") {
+    bmr = 10 * weight + 6.25 * heightCm - 5 * age + 5;
+} else {
+    bmr = 10 * weight + 6.25 * heightCm - 5 * age - 161;
 }
+    document.getElementById("result").innerHTML =
+    "ИМТ: " + bmi.toFixed(1) + "<br>" +
+    "Категория: " + result + "<br><br>" +
+    "Основной обмен: " + Math.round(bmr) + " ккал/сут";
 function calculateIdealWeight() {
 
     let height = Number(document.getElementById("height").value);
@@ -94,26 +101,7 @@ function calculateIdealWeight() {
         "Целевой вес (ИМТ 21): " + targetMin.toFixed(1) + " кг<br>" +
         "Целевой вес (ИМТ 23): " + targetMax.toFixed(1) + " кг";
 }
- function calculateBMR() {
-
-    let weight = Number(document.getElementById("weight").value);
-    let heightCm = Number(document.getElementById("height").value);
-    let height = heightCm / 100;
-    let age = Number(document.getElementById("age").value);
-    let gender = document.getElementById("gender").value;
-
-    let bmr;
-
-    if (gender === "male") {
-        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-    } else {
-        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
-    }
-
-    document.getElementById("result").innerHTML =
-"ИМТ: " + bmi.toFixed(1) + "<br>" +
-status + "<br><br>" +
-"Основной обмен: " + Math.round(bmr) + " ккал/сут";
+ 
 function showConsultation() {
 
     let text = "";

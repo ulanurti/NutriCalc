@@ -93,7 +93,23 @@ function calculateIdealWeight() {
         "Целевой вес (ИМТ 21): " + targetMin.toFixed(1) + " кг<br>" +
         "Целевой вес (ИМТ 23): " + targetMax.toFixed(1) + " кг";
 }
- 
+ function calculateBMR() {
+
+    let weight = Number(document.getElementById("weight").value);
+    let height = Number(document.getElementById("height").value);
+    let age = Number(document.getElementById("age").value);
+    let gender = document.getElementById("gender").value;
+
+    let bmr;
+
+    if (gender === "male") {
+        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+    } else {
+        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+    }
+
+    document.getElementById("result").innerHTML +=
+        "<br>Основной обмен: " + Math.round(bmr) + " ккал";
 function showConsultation() {
 
     let text = "";

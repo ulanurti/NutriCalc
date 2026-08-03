@@ -30,8 +30,9 @@ function calculateAll() {
 let bmiResult = calculateBMI();
 let bmrResult = calculateBMR();
 let earResult = calculateEAR();
-let idealWeightResult = calculateIdealWeight();
-let macros = calculateMacros();   
+let idealWeightResult = calculateIdealWeight(); 
+let patientCategory = document.getElementById("patientCategory").value;
+let macros = calculateMacros(patientCategory);  
 
     document.getElementById("result").innerHTML =
         "<b>Результаты консультации</b><br><br>" +

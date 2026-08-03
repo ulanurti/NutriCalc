@@ -20,8 +20,8 @@ let idealWeightResult = calculateIdealWeight();
         "ИМТ: " + bmiResult.bmi.toFixed(1) + "<br>" +
         "Категория: " + bmiResult.category + "<br><br>" +
         "Основной обмен: " + Math.round(bmrResult) + " ккал/сут<br>" +
-        "Суточная потребность: " + Math.round(earResult) + " ккал/сут"+
-        "Идеальный вес:" + Math.round(IdealWeightResult) + " кг" ;
+        "Суточная потребность: " + Math.round(earResult) + " ккал/сут<br>" +
+        "Идеальный вес: " + Math.round(idealWeightResult) + " кг";
 }
 
 

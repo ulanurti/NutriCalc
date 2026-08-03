@@ -8,17 +8,17 @@ let nutritionRules = {
 
     healthy: {
         protein: 1,
-        fat: 1
+        fatPercent: 30
     },
 
     obesity: {
         protein: 1.2,
-        fat: 0.8
+        fatPercent: 30
     },
 
     ckd: {
         protein: 0.6,
-        fat: 1
+        fatPercent: 35
     }
 
 };

@@ -132,9 +132,8 @@ function calculateBMR() {
     }
 
 
-    return bmr;
-
-}
+    document.getElementById("result").innerHTML =
+    "Основной обмен: " + Math.round(bmr) + " ккал";
 
 
 

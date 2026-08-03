@@ -224,6 +224,20 @@ function calculateIdealWeight() {
 
 }
 
+function calculateMacros() {
+
+    let ear = calculateEAR();
+
+    let protein = (ear * 0.20) / 4;
+    let fat = (ear * 0.30) / 9;
+    let carbs = (ear * 0.50) / 4;
+
+    return {
+        protein: protein,
+        fat: fat,
+        carbs: carbs
+    };
+
 
 
 // История консультаций

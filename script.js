@@ -224,19 +224,37 @@ function calculateIdealWeight() {
 
 }
 
-function calculateMacros() {
+function calculateMacros(proteinNorm) {
 
     let ear = calculateEAR();
 
-    let protein = (ear * 0.20) / 4;
-    let fat = (ear * 0.30) / 9;
-    let carbs = (ear * 0.50) / 4;
+    let weight = Number(document.getElementById("weight").value);
+
+    // Белок в граммах
+    let protein = weight * proteinNorm;
+
+    // Калории из белка
+    let proteinCalories = protein * 4;
+
+    // Жиры 30% от EAR
+    let fatCalories = ear * 0.30;
+
+    // Граммы жира
+    let fat = fatCalories / 9;
+
+    // Остаток калорий на углеводы
+    let carbsCalories = ear - proteinCalories - fatCalories;
+
+    // Граммы углеводов
+    let carbs = carbsCalories / 4;
+
 
     return {
         protein: protein,
         fat: fat,
         carbs: carbs
     };
+}
 
 
 

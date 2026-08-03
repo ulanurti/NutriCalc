@@ -14,6 +14,7 @@ let bmiResult = calculateBMI();
 let bmrResult = calculateBMR();
 let earResult = calculateEAR();
 let idealWeightResult = calculateIdealWeight();
+let macros = calculateMacros();   
 
     document.getElementById("result").innerHTML =
         "<b>Результаты консультации</b><br><br>" +
@@ -21,7 +22,11 @@ let idealWeightResult = calculateIdealWeight();
         "Категория: " + bmiResult.category + "<br><br>" +
         "Основной обмен: " + Math.round(bmrResult) + " ккал/сут<br>" +
         "Суточная потребность: " + Math.round(earResult) + " ккал/сут<br>" +
-        "Идеальный вес: " + Math.round(idealWeightResult) + " кг";
+        "Идеальный вес: " + Math.round(idealWeightResult) + " кг"
+        "<br><br><b>КБЖУ для поддержания веса</b><br>" +
+        "Белки: " + Math.round(macros.protein) + " г<br>" +
+        "Жиры: " + Math.round(macros.fat) + " г<br>" +
+        "Углеводы: " + Math.round(macros.carbs) + " г";
 }
 
 

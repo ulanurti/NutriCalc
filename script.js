@@ -136,7 +136,28 @@ function calculateBMR() {
     "Основной обмен: " + Math.round(bmr) + " ккал";
 
 
+function calculateEAR() {
 
+    // Получаем основной обмен
+    let bmr = calculateBMR();
+
+    // Получаем коэффициент активности
+    let activity = Number(document.getElementById("activity").value);
+
+    // Рассчитываем суточную потребность
+    let ear = bmr * activity;
+
+    // Выводим результат
+    document.getElementById("result").innerHTML +=
+        "<br>Основной обмен: " +
+        Math.round(bmr) +
+        " ккал" +
+        "<br>Суточная потребность (EAR): " +
+        Math.round(ear) +
+        " ккал";
+
+    return ear;
+}
 // Расчёт идеального веса
 
 function calculateIdealWeight() {

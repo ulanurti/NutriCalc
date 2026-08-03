@@ -10,10 +10,10 @@ let patient = {
 
 function calculateAll() {
 
-    let bmiResult = calculateBMI();
-    let bmrResult = calculateBMR();
-    let EARResult = calculateEAR();
-    let IdealWeightResult = calculateIdealWeight();
+let bmiResult = calculateBMI();
+let bmrResult = calculateBMR();
+let earResult = calculateEAR();
+let idealWeightResult = calculateIdealWeight();
 
     document.getElementById("result").innerHTML =
         "<b>Результаты консультации</b><br><br>" +

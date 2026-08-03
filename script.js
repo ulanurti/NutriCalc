@@ -19,8 +19,9 @@ function calculateAll() {
         "<b>Результаты консультации</b><br><br>" +
         "ИМТ: " + bmiResult.bmi.toFixed(1) + "<br>" +
         "Категория: " + bmiResult.category + "<br><br>" +
-           "Основной обмен: " + Math.round(bmrResult) + " ккал/сут<br>" +
-        "Суточная потребность: " + Math.round(earResult) + " ккал/сут";
+        "Основной обмен: " + Math.round(bmrResult) + " ккал/сут<br>" +
+        "Суточная потребность: " + Math.round(earResult) + " ккал/сут"+
+        "Идеальный вес:" + Math.round(IdealWeightResult) + " кг" ;
 }
 
 

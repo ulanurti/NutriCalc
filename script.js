@@ -4,7 +4,24 @@ let patient = {
     height: 0,
     consultations: []
 };
+let nutritionRules = {
 
+    healthy: {
+        protein: 1,
+        fat: 1
+    },
+
+    obesity: {
+        protein: 1.2,
+        fat: 0.8
+    },
+
+    ckd: {
+        protein: 0.6,
+        fat: 1
+    }
+
+};
 
 // Главная кнопка "Рассчитать"
 
@@ -224,28 +241,34 @@ function calculateIdealWeight() {
 
 }
 
-function calculateMacros(proteinNorm) {
+function calculateMacros(patientCategory) {
 
     let ear = calculateEAR();
 
     let weight = Number(document.getElementById("weight").value);
 
-    // Белок в граммах
-    let protein = weight * proteinNorm;
 
-    // Калории из белка
-    let proteinCalories = protein * 4;
+    // получаем нормы выбранной категории
+    let rules = nutritionRules[patientCategory];
 
-    // Жиры 30% от EAR
-    let fat = weight * fatNorm;
 
-    // Граммы жира
+    // белок
+    let protein = weight * rules.protein;
+
+
+    // жиры
+    let fatCalories = ear * (rules.fat / 100);
+
     let fat = fatCalories / 9;
 
-    // Остаток калорий на углеводы
+
+    // калории белка
+    let proteinCalories = protein * 4;
+
+
+    // углеводы - остаток
     let carbsCalories = ear - proteinCalories - fatCalories;
 
-    // Граммы углеводов
     let carbs = carbsCalories / 4;
 
 
@@ -254,6 +277,7 @@ function calculateMacros(proteinNorm) {
         fat: fat,
         carbs: carbs
     };
+
 }
 
 

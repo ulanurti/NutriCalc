@@ -12,8 +12,8 @@ function calculateAll() {
 
     let bmiResult = calculateBMI();
     let bmrResult = calculateBMR();
-
-    calculateIdealWeight();
+    let EARResult = calculateEAR();
+    let IdealWeightResult = calculateIdealWeight();
 
     document.getElementById("result").innerHTML =
         "<b>Результаты консультации</b><br><br>" +

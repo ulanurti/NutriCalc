@@ -237,7 +237,7 @@ function calculateMacros(proteinNorm) {
     let proteinCalories = protein * 4;
 
     // Жиры 30% от EAR
-    let fatCalories = ear * 0.30;
+    let fat = weight * fatNorm;
 
     // Граммы жира
     let fat = fatCalories / 9;

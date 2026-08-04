@@ -303,6 +303,7 @@ function calculateAll() {
 }
 
 
+
 // Расчёт ИМТ
 
 function calculateBMI() {

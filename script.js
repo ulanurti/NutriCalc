@@ -109,23 +109,69 @@ let nutritionRules = {
     }
 
 };
-// Цели консультации
+//========================================
+// Режим консультации
+//========================================
 
-let consultationGoals = {
+let consultationModes = {
 
     maintain: {
 
         name: "Поддержание массы тела",
 
-        calorieCoefficient: 1.0
+        calorieCoefficient: 1.0,
+
+        description: "Поддержание текущей массы тела"
 
     },
 
     weightLoss: {
 
-        name: "Снижение массы тела (-15% за 6 месяцев)",
+        name: "Снижение массы тела",
 
-        calorieCoefficient: 0.8
+        calorieCoefficient: 0.8,
+
+        description: "Снижение массы тела на 15% за 6 месяцев"
+
+    },
+
+    weightGain: {
+
+        name: "Набор массы тела",
+
+        calorieCoefficient: 1.15,
+
+        description: "Постепенное увеличение массы тела"
+
+    },
+
+    muscleGain: {
+
+        name: "Набор мышечной массы",
+
+        calorieCoefficient: 1.10,
+
+        description: "Увеличение мышечной массы при физических нагрузках"
+
+    },
+
+    preoperative: {
+
+        name: "Подготовка к операции",
+
+        calorieCoefficient: 1.0,
+
+        description: "Оптимизация нутритивного статуса перед операцией"
+
+    },
+
+    rehabilitation: {
+
+        name: "Реабилитация",
+
+        calorieCoefficient: 1.1,
+
+        description: "Восстановление после заболевания или операции"
 
     }
 

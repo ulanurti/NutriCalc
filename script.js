@@ -564,8 +564,13 @@ function calculateIdealWeight() {
 
 function calculateMacros(goal, patientCategory) {
 
-
     let rules = nutritionRules[patientCategory];
+
+    if (!rules) {
+        document.getElementById("result").innerHTML =
+            "Ошибка: категория пациента не найдена";
+        return;
+    }
 
 
     let calories = calculateCalories(
@@ -574,12 +579,20 @@ function calculateMacros(goal, patientCategory) {
     );
 
 
-    let weight;
-
-
     let actualWeight = Number(
         document.getElementById("weight").value
     );
+
+
+    if (!actualWeight) {
+        document.getElementById("result").innerHTML =
+            "Введите вес пациента";
+        return;
+    }
+
+
+
+    let weight;
 
 
     let correctedWeight = calculateCorrectedWeight();
@@ -590,8 +603,7 @@ function calculateMacros(goal, patientCategory) {
 
         weight = correctedWeight;
 
-    }
-    else {
+    } else {
 
         weight = actualWeight;
 
@@ -600,12 +612,11 @@ function calculateMacros(goal, patientCategory) {
 
 
     // ==========================
-    // Белок
+    // БЕЛОК
     // ==========================
 
     let proteinMin =
         weight * rules.protein[0];
-
 
     let proteinMax =
         weight * rules.protein[1];
@@ -613,17 +624,17 @@ function calculateMacros(goal, patientCategory) {
 
 
     // ==========================
-    // Жиры
+    // ЖИРЫ
     // ==========================
 
     let fatMinCalories =
         calories.min *
-        (rules.fatPercent[0] / 100);
+        rules.fatPercent[0] / 100;
 
 
     let fatMaxCalories =
         calories.max *
-        (rules.fatPercent[1] / 100);
+        rules.fatPercent[1] / 100;
 
 
 
@@ -637,9 +648,62 @@ function calculateMacros(goal, patientCategory) {
 
 
     // ==========================
-    // Углеводы
-    // остаток калорий
-};
+    // УГЛЕВОДЫ
+    // ==========================
+
+    let carbMinCalories =
+        calories.min -
+        (proteinMin * 4) -
+        fatMinCalories;
+
+
+    let carbMaxCalories =
+        calories.max -
+        (proteinMax * 4) -
+        fatMaxCalories;
+
+
+
+    let carbMin =
+        carbMinCalories / 4;
+
+
+    let carbMax =
+        carbMaxCalories / 4;
+
+
+
+    // ==========================
+    // ВЫВОД
+    // ==========================
+
+    document.getElementById("result").innerHTML += `
+
+    <h3>Расчет КБЖУ</h3>
+
+    Калории:
+    ${calories.min} -
+    ${calories.max} ккал
+
+    <br><br>
+
+    Белок:
+    ${proteinMin.toFixed(1)} -
+    ${proteinMax.toFixed(1)} г
+
+    <br>
+
+    Жиры:
+    ${fatMin.toFixed(1)} -
+    ${fatMax.toFixed(1)} г
+
+    <br>
+
+    Углеводы:
+    ${carbMin.toFixed(1)} -
+    ${carbMax.toFixed(1)} г
+
+    `;
 
 }
 

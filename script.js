@@ -1,14 +1,19 @@
 let patient = {
+
     name: "",
     age: "",
     height: 0,
     consultations: []
+
 };
+
+
 // ===============================
 // Клинические рекомендации NutriCalc
 // ===============================
 
 let nutritionRules = {
+
 
     healthy: {
 
@@ -18,15 +23,16 @@ let nutritionRules = {
 
         calories: [25, 30],      // ккал/кг
 
-        protein: [0.8, 1.0],      // г/кг
+        protein: [0.8, 1.0],     // г/кг
 
-        fatPercent: [25, 35]      // % от общей калорийности
+        fatPercent: [25, 35]     // % калорийности
 
     },
 
-    weightLoss: {
 
-        name: "Снижение массы тела",
+    obesity: {
+
+        name: "Ожирение",
 
         weightType: "corrected",
 
@@ -37,6 +43,7 @@ let nutritionRules = {
         fatPercent: [25, 30]
 
     },
+
 
     ckd: {
 
@@ -52,6 +59,7 @@ let nutritionRules = {
 
     },
 
+
     dialysis: {
 
         name: "Гемодиализ",
@@ -65,6 +73,7 @@ let nutritionRules = {
         fatPercent: [30, 35]
 
     },
+
 
     cirrhosis: {
 
@@ -80,6 +89,7 @@ let nutritionRules = {
 
     },
 
+
     pregnancy: {
 
         name: "Беременность",
@@ -94,6 +104,22 @@ let nutritionRules = {
 
     },
 
+
+    lactation: {
+
+        name: "Грудное вскармливание",
+
+        weightType: "actual",
+
+        calories: [30, 35],
+
+        protein: [1.1, 1.3],
+
+        fatPercent: [30, 35]
+
+    },
+
+
     anorexia: {
 
         name: "Анорексия",
@@ -106,14 +132,33 @@ let nutritionRules = {
 
         fatPercent: [30, 35]
 
+    },
+
+
+    copd: {
+
+        name: "ХОБЛ",
+
+        weightType: "actual",
+
+        calories: [30, 35],
+
+        protein: [1.2, 1.5],
+
+        fatPercent: [35, 40]
+
     }
 
 };
+
+
+
 //========================================
 // Режим консультации
 //========================================
 
 let consultationModes = {
+
 
     maintain: {
 
@@ -125,15 +170,17 @@ let consultationModes = {
 
     },
 
+
     weightLoss: {
 
-        name: "Снижение массы тела",
+        name: "Снижение массы тела (-15% за 6 месяцев)",
 
         calorieCoefficient: 0.8,
 
-        description: "Снижение массы тела на 15% за 6 месяцев"
+        description: "Снижение калорийности примерно на 20% от EAR"
 
     },
+
 
     weightGain: {
 
@@ -145,15 +192,17 @@ let consultationModes = {
 
     },
 
+
     muscleGain: {
 
         name: "Набор мышечной массы",
 
         calorieCoefficient: 1.10,
 
-        description: "Увеличение мышечной массы при физических нагрузках"
+        description: "Увеличение мышечной массы при тренировках"
 
     },
+
 
     preoperative: {
 
@@ -165,11 +214,12 @@ let consultationModes = {
 
     },
 
+
     rehabilitation: {
 
         name: "Реабилитация",
 
-        calorieCoefficient: 1.1,
+        calorieCoefficient: 1.10,
 
         description: "Восстановление после заболевания или операции"
 

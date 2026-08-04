@@ -109,6 +109,27 @@ let nutritionRules = {
     }
 
 };
+// Цели консультации
+
+let consultationGoals = {
+
+    maintain: {
+
+        name: "Поддержание массы тела",
+
+        calorieCoefficient: 1.0
+
+    },
+
+    weightLoss: {
+
+        name: "Снижение массы тела (-15% за 6 месяцев)",
+
+        calorieCoefficient: 0.8
+
+    }
+
+};
 
 // Главная кнопка "Рассчитать"
 

@@ -685,36 +685,53 @@ function calculateMacros(goal, patientCategory) {
 
 
     // ==========================
-    // ВЫВОД
-    // ==========================
+    // // ==========================
+// ВЫВОД
+// ==========================
 
-    document.getElementById("result").innerHTML += `
+document.getElementById("result").innerHTML += `
 
-    <h3>Расчет КБЖУ</h3>
+<h3>Расчет КБЖУ</h3>
 
-    Калории:
-    ${calories.min} -
-    ${calories.max} ккал
+Калории:
+${calories.min.toFixed(0)} -
+${calories.max.toFixed(0)} ккал
 
-    <br><br>
+<br><br>
 
-    Белок:
-    ${proteinMin.toFixed(1)} -
-    ${proteinMax.toFixed(1)} г
+Белок:
+${proteinMin.toFixed(1)} -
+${proteinMax.toFixed(1)} г
 
-    <br>
+<br>
 
-    Жиры:
-    ${fatMin.toFixed(1)} -
-    ${fatMax.toFixed(1)} г
+Жиры:
+${fatMin.toFixed(1)} -
+${fatMax.toFixed(1)} г
 
-    <br>
+<br>
 
-    Углеводы:
-    ${carbMin.toFixed(1)} -
-    ${carbMax.toFixed(1)} г
+Углеводы:
+${carbMin.toFixed(1)} -
+${carbMax.toFixed(1)} г
 
-    `;
+`;
+
+
+// Возвращаем данные для calculateAll()
+
+return {
+
+    proteinMin: proteinMin,
+    proteinMax: proteinMax,
+
+    fatMin: fatMin,
+    fatMax: fatMax,
+
+    carbsMin: carbMin,
+    carbsMax: carbMax
+
+};
 
 }
 

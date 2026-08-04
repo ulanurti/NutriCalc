@@ -114,26 +114,76 @@ let nutritionRules = {
 
 function calculateAll() {
 
-let bmiResult = calculateBMI();
-let bmrResult = calculateBMR();
-let earResult = calculateEAR();
-let idealWeightResult = calculateIdealWeight(); 
-let patientCategory = document.getElementById("patientCategory").value;
-let macros = calculateMacros(patientCategory);  
+    // Основные расчеты
+    let bmiResult = calculateBMI();
+    let idealWeightResult = calculateIdealWeight();
+    let correctedWeightResult = calculateCorrectedWeight();
+    let bmrResult = calculateBMR();
+    let earResult = calculateEAR();
 
+    // Цель консультации
+    let goal = document.getElementById("goal").value;
+
+    // Категория пациента
+    let patientCategory = document.getElementById("patientCategory").value;
+
+    // Рекомендуемая калорийность
+    let caloriesResult = calculateCalories(goal, patientCategory);
+
+    // КБЖУ
+    let macros = calculateMacros(goal, patientCategory);
+
+    // Вывод результатов
     document.getElementById("result").innerHTML =
-        "<b>Результаты консультации</b><br><br>" +
-        "ИМТ: " + bmiResult.bmi.toFixed(1) + "<br>" +
-        "Категория: " + bmiResult.category + "<br><br>" +
-        "Основной обмен: " + Math.round(bmrResult) + " ккал/сут<br>" +
-        "Суточная потребность: " + Math.round(earResult) + " ккал/сут<br>" +
-        "Идеальный вес: " + Math.round(idealWeightResult) + " кг"
-        "<br><br><b>КБЖУ для поддержания веса</b><br>" +
-        "Белки: " + Math.round(macros.protein) + " г<br>" +
-        "Жиры: " + Math.round(macros.fat) + " г<br>" +
-        "Углеводы: " + Math.round(macros.carbs) + " г";
-}
 
+        "<h3>Результаты консультации</h3>" +
+
+        "<b>ИМТ:</b> " + bmiResult.bmi.toFixed(1) + "<br>" +
+        "<b>Категория ИМТ:</b> " + bmiResult.category + "<br><br>" +
+
+        "<b>Идеальная масса:</b> " +
+        Math.round(idealWeightResult) + " кг<br>" +
+
+        "<b>Скорректированная масса:</b> " +
+        Math.round(correctedWeightResult) + " кг<br><br>" +
+
+        "<b>Основной обмен (BMR):</b> " +
+        Math.round(bmrResult) + " ккал/сут<br>" +
+
+        "<b>EAR:</b> " +
+        Math.round(earResult) + " ккал/сут<br><br>" +
+
+        "<b>Цель консультации:</b> " +
+        consultationGoals[goal].name + "<br>" +
+
+        "<b>Категория пациента:</b> " +
+        nutritionRules[patientCategory].name + "<br><br>" +
+
+        "<b>Рекомендуемая калорийность:</b> " +
+        Math.round(caloriesResult.min) +
+        " – " +
+        Math.round(caloriesResult.max) +
+        " ккал/сут<br><br>" +
+
+        "<b>Белки:</b> " +
+        Math.round(macros.proteinMin) +
+        " – " +
+        Math.round(macros.proteinMax) +
+        " г<br>" +
+
+        "<b>Жиры:</b> " +
+        Math.round(macros.fatMin) +
+        " – " +
+        Math.round(macros.fatMax) +
+        " г<br>" +
+
+        "<b>Углеводы:</b> " +
+        Math.round(macros.carbsMin) +
+        " – " +
+        Math.round(macros.carbsMax) +
+        " г";
+
+}
 
 
 // Расчёт ИМТ

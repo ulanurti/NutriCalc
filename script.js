@@ -238,65 +238,76 @@ function calculateAll() {
     let bmrResult = calculateBMR();
     let earResult = calculateEAR();
 
+
     // Цель консультации
-    let goal = document.getElementById("goal").value;
+    let goal = "maintain";
+
 
     // Категория пациента
-    let patientCategory = document.getElementById("patientCategory").value;
+    let patientCategory =
+        document.getElementById("patientCategory").value;
 
-    // Рекомендуемая калорийность
-    let caloriesResult = calculateCalories(goal, patientCategory);
+
+    // Калории
+    let caloriesResult =
+        calculateCalories(goal, patientCategory);
+
 
     // КБЖУ
-    let macros = calculateMacros(goal, patientCategory);
+    let macros =
+        calculateMacros(goal, patientCategory);
 
-    // Вывод результатов
+
+
     document.getElementById("result").innerHTML =
 
         "<h3>Результаты консультации</h3>" +
 
-        "<b>ИМТ:</b> " + bmiResult.bmi.toFixed(1) + "<br>" +
-        "<b>Категория ИМТ:</b> " + bmiResult.category + "<br><br>" +
+        "<b>ИМТ:</b> " +
+        bmiResult.bmi.toFixed(1) +
+        "<br>" +
+
+        "<b>Категория ИМТ:</b> " +
+        bmiResult.category +
+        "<br><br>" +
 
         "<b>Идеальная масса:</b> " +
-        Math.round(idealWeightResult) + " кг<br>" +
+        Math.round(idealWeightResult) +
+        " кг<br>" +
 
         "<b>Скорректированная масса:</b> " +
-        Math.round(correctedWeightResult) + " кг<br><br>" +
+        Math.round(correctedWeightResult) +
+        " кг<br><br>" +
 
-        "<b>Основной обмен (BMR):</b> " +
-        Math.round(bmrResult) + " ккал/сут<br>" +
+        "<b>BMR:</b> " +
+        Math.round(bmrResult) +
+        " ккал/сут<br>" +
 
         "<b>EAR:</b> " +
-        Math.round(earResult) + " ккал/сут<br><br>" +
-
-        "<b>Цель консультации:</b> " +
-        consultationGoals[goal].name + "<br>" +
-
-        "<b>Категория пациента:</b> " +
-        nutritionRules[patientCategory].name + "<br><br>" +
-
-        "<b>Рекомендуемая калорийность:</b> " +
-        Math.round(caloriesResult.min) +
-        " – " +
-        Math.round(caloriesResult.max) +
+        Math.round(earResult) +
         " ккал/сут<br><br>" +
+
+        "<b>Калории:</b> " +
+        Math.round(caloriesResult.min) +
+        " - " +
+        Math.round(caloriesResult.max) +
+        " ккал<br><br>" +
 
         "<b>Белки:</b> " +
         Math.round(macros.proteinMin) +
-        " – " +
+        " - " +
         Math.round(macros.proteinMax) +
         " г<br>" +
 
         "<b>Жиры:</b> " +
         Math.round(macros.fatMin) +
-        " – " +
+        " - " +
         Math.round(macros.fatMax) +
         " г<br>" +
 
         "<b>Углеводы:</b> " +
         Math.round(macros.carbsMin) +
-        " – " +
+        " - " +
         Math.round(macros.carbsMax) +
         " г";
 

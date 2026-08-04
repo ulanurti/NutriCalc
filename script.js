@@ -496,47 +496,152 @@ function calculateIdealWeight() {
         " кг";
 
 }
-
-function calculateMacros(patientCategory) {
-
-    let ear = calculateEAR();
-
-    let weight = Number(document.getElementById("weight").value);
+    function calculateCalories(goal, patientCategory) {
 
 
-    // получаем нормы выбранной категории
     let rules = nutritionRules[patientCategory];
 
-
-    // белок
-    let protein = weight * rules.protein;
+    let mode = consultationModes[goal];
 
 
-    // жиры
-    let fatCalories = ear * (rules.fat / 100);
-
-    let fat = fatCalories / 9;
-
-
-    // калории белка
-    let proteinCalories = protein * 4;
+    let actualWeight = Number(
+        document.getElementById("weight").value
+    );
 
 
-    // углеводы - остаток
-    let carbsCalories = ear - proteinCalories - fatCalories;
+    let correctedWeight = calculateCorrectedWeight();
 
-    let carbs = carbsCalories / 4;
+
+    // Выбираем массу для расчета
+
+    let weight;
+
+
+    if (rules.weightType === "corrected") {
+
+        weight = correctedWeight;
+
+    } 
+    else {
+
+        weight = actualWeight;
+
+    }
+
+
+
+    // Диапазон калорий
+
+    let minCalories =
+        rules.calories[0] * weight;
+
+
+    let maxCalories =
+        rules.calories[1] * weight;
+
+
+
+    // Учитываем цель консультации
+
+    minCalories =
+        minCalories * mode.calorieCoefficient;
+
+
+    maxCalories =
+        maxCalories * mode.calorieCoefficient;
+
 
 
     return {
-        protein: protein,
-        fat: fat,
-        carbs: carbs
+
+        min: minCalories,
+
+        max: maxCalories
+
     };
 
 }
 
+function calculateMacros(goal, patientCategory) {
 
+
+    let rules = nutritionRules[patientCategory];
+
+
+    let calories = calculateCalories(
+        goal,
+        patientCategory
+    );
+
+
+    let weight;
+
+
+    let actualWeight = Number(
+        document.getElementById("weight").value
+    );
+
+
+    let correctedWeight = calculateCorrectedWeight();
+
+
+
+    if (rules.weightType === "corrected") {
+
+        weight = correctedWeight;
+
+    }
+    else {
+
+        weight = actualWeight;
+
+    }
+
+
+
+    // ==========================
+    // Белок
+    // ==========================
+
+    let proteinMin =
+        weight * rules.protein[0];
+
+
+    let proteinMax =
+        weight * rules.protein[1];
+
+
+
+    // ==========================
+    // Жиры
+    // ==========================
+
+    let fatMinCalories =
+        calories.min *
+        (rules.fatPercent[0] / 100);
+
+
+    let fatMaxCalories =
+        calories.max *
+        (rules.fatPercent[1] / 100);
+
+
+
+    let fatMin =
+        fatMinCalories / 9;
+
+
+    let fatMax =
+        fatMaxCalories / 9;
+
+
+
+    // ==========================
+    // Углеводы
+    // остаток калорий
+};
+
+}
 
 // История консультаций
 

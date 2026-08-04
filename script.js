@@ -575,166 +575,54 @@ function calculateIdealWeight() {
 
 function calculateMacros(goal, patientCategory) {
 
-    let rules = nutritionRules[patientCategory];
+    let weight = Number(document.getElementById("weight").value);
 
-    if (!rules) {
-        document.getElementById("result").innerHTML =
-            "Ошибка: категория пациента не найдена";
-        return;
+    if (!weight) {
+        return {
+            proteinMin: 0,
+            proteinMax: 0,
+            fatMin: 0,
+            fatMax: 0,
+            carbsMin: 0,
+            carbsMax: 0
+        };
     }
 
 
-    let calories = calculateCalories(
-        goal,
-        patientCategory
-    );
+    let calories = calculateCalories(goal, patientCategory);
 
 
-    let actualWeight = Number(
-        document.getElementById("weight").value
-    );
+    let proteinMin = weight * 1.2;
+    let proteinMax = weight * 1.5;
 
 
-    if (!actualWeight) {
-        document.getElementById("result").innerHTML =
-            "Введите вес пациента";
-        return;
-    }
+    let fatMin = calories.min * 0.25 / 9;
+    let fatMax = calories.max * 0.35 / 9;
 
 
+    let carbsMin = 
+        (calories.min - proteinMin * 4 - fatMin * 9) / 4;
 
-    let weight;
 
-
-    let correctedWeight = calculateCorrectedWeight();
+    let carbsMax = 
+        (calories.max - proteinMax * 4 - fatMax * 9) / 4;
 
 
 
-    if (rules.weightType === "corrected") {
+    return {
 
-        weight = correctedWeight;
+        proteinMin: proteinMin,
+        proteinMax: proteinMax,
 
-    } else {
+        fatMin: fatMin,
+        fatMax: fatMax,
 
-        weight = actualWeight;
+        carbsMin: carbsMin,
+        carbsMax: carbsMax
 
-    }
-
-
-
-    // ==========================
-    // БЕЛОК
-    // ==========================
-
-    let proteinMin =
-        weight * rules.protein[0];
-
-    let proteinMax =
-        weight * rules.protein[1];
-
-
-
-    // ==========================
-    // ЖИРЫ
-    // ==========================
-
-    let fatMinCalories =
-        calories.min *
-        rules.fatPercent[0] / 100;
-
-
-    let fatMaxCalories =
-        calories.max *
-        rules.fatPercent[1] / 100;
-
-
-
-    let fatMin =
-        fatMinCalories / 9;
-
-
-    let fatMax =
-        fatMaxCalories / 9;
-
-
-
-    // ==========================
-    // УГЛЕВОДЫ
-    // ==========================
-
-    let carbMinCalories =
-        calories.min -
-        (proteinMin * 4) -
-        fatMinCalories;
-
-
-    let carbMaxCalories =
-        calories.max -
-        (proteinMax * 4) -
-        fatMaxCalories;
-
-
-
-    let carbMin =
-        carbMinCalories / 4;
-
-
-    let carbMax =
-        carbMaxCalories / 4;
-
-
-
-    // ==========================
-    // // ==========================
-// ВЫВОД
-// ==========================
-
-document.getElementById("result").innerHTML += `
-
-<h3>Расчет КБЖУ</h3>
-
-Калории:
-${calories.min.toFixed(0)} -
-${calories.max.toFixed(0)} ккал
-
-<br><br>
-
-Белок:
-${proteinMin.toFixed(1)} -
-${proteinMax.toFixed(1)} г
-
-<br>
-
-Жиры:
-${fatMin.toFixed(1)} -
-${fatMax.toFixed(1)} г
-
-<br>
-
-Углеводы:
-${carbMin.toFixed(1)} -
-${carbMax.toFixed(1)} г
-
-`;
-
-
-// Возвращаем данные для calculateAll()
-
-return {
-
-    proteinMin: proteinMin,
-    proteinMax: proteinMax,
-
-    fatMin: fatMin,
-    fatMax: fatMax,
-
-    carbsMin: carbMin,
-    carbsMax: carbMax
-
-};
+    };
 
 }
-
 // История консультаций
 
 function showConsultation() {

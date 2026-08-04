@@ -4,21 +4,108 @@ let patient = {
     height: 0,
     consultations: []
 };
+// ===============================
+// Клинические рекомендации NutriCalc
+// ===============================
+
 let nutritionRules = {
 
     healthy: {
-        protein: 1,
-        fatPercent: 30
+
+        name: "Здоровый человек",
+
+        weightType: "actual",
+
+        calories: [25, 30],      // ккал/кг
+
+        protein: [0.8, 1.0],      // г/кг
+
+        fatPercent: [25, 35]      // % от общей калорийности
+
     },
 
-    obesity: {
-        protein: 1.2,
-        fatPercent: 30
+    weightLoss: {
+
+        name: "Снижение массы тела",
+
+        weightType: "corrected",
+
+        calories: [20, 25],
+
+        protein: [1.2, 1.5],
+
+        fatPercent: [25, 30]
+
     },
 
     ckd: {
-        protein: 0.6,
-        fatPercent: 35
+
+        name: "Хроническая болезнь почек",
+
+        weightType: "actual",
+
+        calories: [30, 35],
+
+        protein: [0.6, 0.8],
+
+        fatPercent: [30, 35]
+
+    },
+
+    dialysis: {
+
+        name: "Гемодиализ",
+
+        weightType: "actual",
+
+        calories: [30, 35],
+
+        protein: [1.0, 1.2],
+
+        fatPercent: [30, 35]
+
+    },
+
+    cirrhosis: {
+
+        name: "Цирроз печени",
+
+        weightType: "actual",
+
+        calories: [30, 35],
+
+        protein: [1.2, 1.5],
+
+        fatPercent: [30, 35]
+
+    },
+
+    pregnancy: {
+
+        name: "Беременность",
+
+        weightType: "actual",
+
+        calories: [30, 35],
+
+        protein: [1.1, 1.3],
+
+        fatPercent: [30, 35]
+
+    },
+
+    anorexia: {
+
+        name: "Анорексия",
+
+        weightType: "actual",
+
+        calories: [30, 40],
+
+        protein: [1.2, 1.5],
+
+        fatPercent: [30, 35]
+
     }
 
 };

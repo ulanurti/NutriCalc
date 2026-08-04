@@ -137,8 +137,7 @@ let consultationModes = {
 
 function calculateAll() {
 
-
-    let bmiResult = calculateBMI();
+    let bmiResult = getBMI();
 
     let idealWeightResult = calculateIdealWeight();
 
@@ -149,22 +148,23 @@ function calculateAll() {
     let earResult = calculateEAR();
 
 
-
     let goal = "maintain";
 
 
     let patientCategory =
-        document.getElementById("patientCategory").value;
-
+    document.getElementById("patientCategory").value;
 
 
     let caloriesResult =
-        calculateCalories(goal, patientCategory);
-
+    calculateCalories(goal, patientCategory);
 
 
     let macros =
-        calculateMacros(goal, patientCategory);
+    calculateMacros(goal, patientCategory);
+
+
+
+    saveConsultation();
 
 
 
@@ -172,11 +172,14 @@ function calculateAll() {
 
     "<h3>Результаты консультации</h3>" +
 
-    "ИМТ: " + bmiResult.bmi.toFixed(1) +
+    "<b>ИМТ:</b> " +
+    bmiResult.bmi.toFixed(1) +
+
     "<br>" +
 
-       "<b>Категория:</b> " +
+    "<b>Категория:</b> " +
     bmiResult.category +
+
     "<br><br>" +
 
     "<b>Идеальная масса:</b> " +
@@ -220,38 +223,30 @@ function calculateAll() {
     " г";
 
 }
-
-
-
 // ===============================
-// Расчёт ИМТ
+// Получение ИМТ без записи в историю
 // ===============================
 
-function calculateBMI() {
-
+function getBMI() {
 
     let weight =
     Number(document.getElementById("weight").value);
-
 
     let heightCm =
     Number(document.getElementById("height").value);
 
 
+    if (!weight || !heightCm) {
+
+        return {
+            bmi: 0,
+            category: "Нет данных"
+        };
+
+    }
+
+
     let heightM = heightCm / 100;
-
-
-    let waist =
-    Number(document.getElementById("waist").value);
-
-
-    let hips =
-    Number(document.getElementById("hips").value);
-
-
-    let shoulders =
-    Number(document.getElementById("shoulders").value);
-
 
 
     let bmi = weight / (heightM * heightM);
@@ -287,8 +282,52 @@ function calculateBMI() {
     }
 
 
+    return {
 
-    patient.height = heightCm;
+        bmi: bmi,
+
+        category: category
+
+    };
+
+}
+
+
+
+
+// ===============================
+// Сохранение консультации
+// ===============================
+
+function saveConsultation() {
+
+
+    let weight =
+    Number(document.getElementById("weight").value);
+
+
+    let height =
+    Number(document.getElementById("height").value);
+
+
+    let waist =
+    Number(document.getElementById("waist").value);
+
+
+    let hips =
+    Number(document.getElementById("hips").value);
+
+
+    let shoulders =
+    Number(document.getElementById("shoulders").value);
+
+
+
+    let bmiResult = getBMI();
+
+
+
+    patient.height = height;
 
 
 
@@ -298,7 +337,7 @@ function calculateBMI() {
 
         weight: weight,
 
-        height: heightCm,
+        height: height,
 
         waist: waist,
 
@@ -306,22 +345,13 @@ function calculateBMI() {
 
         shoulders: shoulders,
 
-        bmi: bmi
+        bmi: bmiResult.bmi
 
     });
 
 
-
-    return {
-
-        bmi: bmi,
-
-        category: category
-
-    };
-
-
 }
+
 
 
 
@@ -373,13 +403,15 @@ function calculateBMR() {
         5 * age -
         161;
 
-    }
 
+    }
 
 
     return bmr;
 
 }
+
+
 
 
 
@@ -393,21 +425,32 @@ function calculateEAR() {
     let bmr = calculateBMR();
 
 
-    let activity =
-    Number(document.getElementById("activity").value);
+
+    let activityElement =
+    document.getElementById("activity");
 
 
 
-    let ear = bmr * activity;
+    let activity = 1.2;
 
 
-    return ear;
+
+    if (activityElement) {
+
+        activity =
+        Number(activityElement.value) || 1.2;
+
+    }
+
+
+
+    return bmr * activity;
+
 
 }
 
-        
-/// ===============================
-// Идеальный вес
+// ===============================
+// Идеальный вес (формула Devine)
 // ===============================
 
 function calculateIdealWeight() {
@@ -421,9 +464,6 @@ function calculateIdealWeight() {
     document.getElementById("gender").value;
 
 
-
-    let brock;
-
     let devine;
 
 
@@ -431,18 +471,11 @@ function calculateIdealWeight() {
     if (gender === "male") {
 
 
-        brock = heightCm - 100;
-
-
         devine =
         50 + 0.9 * (heightCm - 152.4);
 
 
-
     } else {
-
-
-        brock = heightCm - 110;
 
 
         devine =
@@ -456,6 +489,7 @@ function calculateIdealWeight() {
     return devine;
 
 }
+
 
 
 
@@ -476,9 +510,8 @@ function calculateCorrectedWeight() {
 
 
 
-    // Формула: идеальный + 0.4*(фактический - идеальный)
-
     let corrected =
+
     idealWeight +
     0.4 * (actualWeight - idealWeight);
 
@@ -514,6 +547,7 @@ function calculateCalories(goal, patientCategory) {
     }
 
 
+
     if (!mode) {
 
         mode = consultationModes.maintain;
@@ -529,7 +563,8 @@ function calculateCalories(goal, patientCategory) {
 
     if (rules.weightType === "corrected") {
 
-        weight = calculateCorrectedWeight();
+        weight =
+        calculateCorrectedWeight();
 
     }
 
@@ -561,7 +596,6 @@ function calculateCalories(goal, patientCategory) {
 
     };
 
-
 }
 
 
@@ -569,7 +603,7 @@ function calculateCalories(goal, patientCategory) {
 
 
 // ===============================
-// КБЖУ
+// Расчёт КБЖУ
 // ===============================
 
 function calculateMacros(goal, patientCategory) {
@@ -577,6 +611,15 @@ function calculateMacros(goal, patientCategory) {
 
     let rules =
     nutritionRules[patientCategory];
+
+
+
+    if (!rules) {
+
+        rules =
+        nutritionRules.healthy;
+
+    }
 
 
 
@@ -600,18 +643,26 @@ function calculateMacros(goal, patientCategory) {
 
 
     let fatMin =
+
     calories.min *
-    rules.fatPercent[0] / 100 / 9;
+    rules.fatPercent[0] /
+    100 /
+    9;
+
 
 
     let fatMax =
+
     calories.max *
-    rules.fatPercent[1] / 100 / 9;
+    rules.fatPercent[1] /
+    100 /
+    9;
 
 
 
 
     let carbsMin =
+
     (calories.min -
     proteinMin * 4 -
     fatMin * 9) / 4;
@@ -619,9 +670,11 @@ function calculateMacros(goal, patientCategory) {
 
 
     let carbsMax =
+
     (calories.max -
     proteinMax * 4 -
     fatMax * 9) / 4;
+
 
 
 
@@ -642,14 +695,10 @@ function calculateMacros(goal, patientCategory) {
 
         carbsMax: carbsMax
 
-
     };
 
 
 }
-
-
-
 
 // ===============================
 // История консультаций
@@ -659,6 +708,19 @@ function showConsultation() {
 
 
     let text = "";
+
+
+
+    if (patient.consultations.length === 0) {
+
+
+        document.getElementById("history").innerHTML =
+        "История консультаций пока пустая";
+
+
+        return;
+
+    }
 
 
 
@@ -680,6 +742,11 @@ function showConsultation() {
         "<b>Консультация " +
         (i + 1) +
         "</b><br>" +
+
+
+        "Дата: " +
+        c.date.toLocaleDateString() +
+        "<br>" +
 
 
         "Вес: " +
@@ -733,7 +800,7 @@ function showGraph() {
 
 
     alert(
-    "График добавим следующим этапом"
+    "График ИМТ добавим следующим этапом"
     );
 
 

@@ -787,7 +787,31 @@ function showConsultation() {
 
 
 }
+function printConsultation() {
 
+    let report =
+`
+NutriCalc
+Отчёт консультации
+
+Дата:
+${new Date().toLocaleDateString()}
+
+
+${document.getElementById("result").innerText}
+
+
+`;
+
+    let win = window.open("");
+
+    win.document.write(
+        "<pre>" + report + "</pre>"
+    );
+
+    win.print();
+
+}
 
 
 

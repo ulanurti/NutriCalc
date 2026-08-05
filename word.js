@@ -1,9 +1,19 @@
-
 function createWordReport() {
 
-    // ===============================
-    // Получаем данные пациента
-    // ===============================
+    const {
+        Document,
+        Packer,
+        Paragraph,
+        TextRun,
+        Table,
+        TableRow,
+        TableCell
+    } = docx;
+
+
+    // =========================
+    // Данные пациента
+    // =========================
 
     let name = document.getElementById("name")?.value || "Не указано";
     let age = document.getElementById("age")?.value || "Не указано";
@@ -16,239 +26,193 @@ function createWordReport() {
     let hips = document.getElementById("hips")?.value || "Не указано";
 
 
-    // ===============================
-    // Получаем результаты расчётов
-    // ===============================
+    // =========================
+    // Результаты расчётов
+    // =========================
 
-    let result = document.getElementById("result")?.innerHTML 
-    || "Расчёты ещё не выполнены";
-
-
-    // ===============================
-    // Дата консультации
-    // ===============================
-
-    let today = new Date();
-
-    let date = today.toLocaleDateString("ru-RU");
+    let result = document.getElementById("result")?.innerText 
+        || "Расчёты не выполнены";
 
 
-    // ===============================
-    // Создание документа
-    // ===============================
+    // =========================
+    // Таблица пациента
+    // =========================
 
-    let content = `
+    let patientTable = new Table({
 
-<html>
+        rows: [
 
-<head>
+            new TableRow({
 
-<meta charset="UTF-8">
+                children: [
 
-<style>
+                    new TableCell({
 
-body {
-    font-family: Arial;
-    font-size: 14px;
+                        children: [
+                            new Paragraph("Параметр")
+                        ]
+
+                    }),
+
+                    new TableCell({
+
+                        children: [
+                            new Paragraph("Значение")
+                        ]
+
+                    })
+
+                ]
+
+            }),
+
+
+            createRow("Имя", name),
+            createRow("Возраст", age),
+            createRow("Пол", gender),
+            createRow("Рост", height + " см"),
+            createRow("Вес", weight + " кг"),
+            createRow("Талия", waist + " см"),
+            createRow("Бёдра", hips + " см")
+
+        ]
+
+    });
+
+
+
+    // =========================
+    // Документ Word
+    // =========================
+
+    let doc = new Document({
+
+        sections: [
+
+            {
+
+                children: [
+
+                    new Paragraph({
+
+                        children: [
+
+                            new TextRun({
+
+                                text: "NutriCalc\n",
+                                bold: true,
+                                size: 32
+
+                            }),
+
+                            new TextRun({
+
+                                text: "Консультация по питанию",
+                                size: 24
+
+                            })
+
+                        ]
+
+                    }),
+
+
+
+                    new Paragraph(
+                        "Данные пациента:"
+                    ),
+
+
+                    patientTable,
+
+
+
+                    new Paragraph(
+                        "Результаты расчётов:"
+                    ),
+
+
+                    new Paragraph(result),
+
+
+
+                    new Paragraph(
+                        "Рекомендации:"
+                    ),
+
+
+                    new Paragraph(
+                        "________________________________"
+                    ),
+
+                    new Paragraph(
+                        "________________________________"
+                    )
+
+                ]
+
+            }
+
+        ]
+
+    });
+
+
+
+    // =========================
+    // Сохранение файла
+    // =========================
+
+    Packer.toBlob(doc)
+        .then(blob => {
+
+            saveAs(
+                blob,
+                "NutriCalc_Консультация.docx"
+            );
+
+        });
+
 }
 
-h1 {
-    text-align: center;
-}
 
-h2 {
-    margin-top: 20px;
-}
 
-table {
+// =========================
+// Создание строки таблицы
+// =========================
 
-    border-collapse: collapse;
-    width: 100%;
+function createRow(parameter, value) {
 
-}
+    const {
+        TableRow,
+        TableCell,
+        Paragraph
+    } = docx;
 
-td, th {
 
-    border: 1px solid black;
-    padding: 5px;
+    return new TableRow({
 
-}
+        children: [
 
-</style>
+            new TableCell({
 
-</head>
+                children: [
+                    new Paragraph(parameter)
+                ]
 
+            }),
 
-<body>
 
+            new TableCell({
 
-<h1>
-NutriCalc
-</h1>
+                children: [
+                    new Paragraph(String(value))
+                ]
 
+            })
 
-<h2>
-Консультация по питанию
-</h2>
+        ]
 
-
-<p>
-Дата консультации: ${date}
-</p>
-
-
-
-<h2>
-Данные пациента
-</h2>
-
-
-<table>
-
-<tr>
-<td>Имя</td>
-<td>${name}</td>
-</tr>
-
-
-<tr>
-<td>Возраст</td>
-<td>${age}</td>
-</tr>
-
-
-<tr>
-<td>Пол</td>
-<td>${gender}</td>
-</tr>
-
-
-<tr>
-<td>Рост</td>
-<td>${height} см</td>
-</tr>
-
-
-<tr>
-<td>Вес</td>
-<td>${weight} кг</td>
-</tr>
-
-
-</table>
-
-
-
-<h2>
-Антропометрия
-</h2>
-
-
-<table>
-
-
-<tr>
-<td>Талия</td>
-<td>${waist} см</td>
-</tr>
-
-
-<tr>
-<td>Бёдра</td>
-<td>${hips} см</td>
-</tr>
-
-
-</table>
-
-
-
-
-<h2>
-Результаты расчётов
-</h2>
-
-
-<div>
-
-${result}
-
-</div>
-
-
-
-
-<h2>
-Рекомендации
-</h2>
-
-
-<p>
-
-__________________________________________________
-
-</p>
-
-
-<p>
-
-__________________________________________________
-
-</p>
-
-
-<p>
-
-__________________________________________________
-
-</p>
-
-
-
-</body>
-
-</html>
-
-`;
-
-
-
-    // ===============================
-    // Сохранение как Word
-    // ===============================
-
-
-    let blob = new Blob(
-
-        [
-            "\ufeff",
-            content
-        ],
-
-        {
-            type:
-            "application/msword"
-        }
-
-    );
-
-
-
-    let link = document.createElement("a");
-
-
-    link.href =
-    URL.createObjectURL(blob);
-
-
-
-    link.download =
-    "NutriCalc_Консультация.doc";
-
-
-
-    link.click();
-
-
+    });
 
 }

@@ -7,7 +7,74 @@ function createWordReport() {
         TextRun
     } = docx;
 
-    let patient = getPatientData();
+
+    let age = document.getElementById("age")?.value || "-";
+    let gender = document.getElementById("gender")?.value || "-";
+
+    let weight = document.getElementById("weight")?.value || "-";
+    let height = document.getElementById("height")?.value || "-";
+
+    let waist = document.getElementById("waist")?.value || "-";
+    let hips = document.getElementById("hips")?.value || "-";
+    let shoulders = document.getElementById("shoulders")?.value || "-";
+
+
+    let result = document.getElementById("result")?.innerText ||
+    "Расчёты не выполнены";
+
+
+    let date = new Date().toLocaleDateString("ru-RU");
+
+
+
+    let text =
+
+`NutriCalc
+
+Консультация по питанию
+
+Дата: ${date}
+
+
+ДАННЫЕ ПАЦИЕНТА
+
+Возраст: ${age}
+
+Пол: ${gender}
+
+Рост: ${height} см
+
+Вес: ${weight} кг
+
+Талия: ${waist} см
+
+Бёдра: ${hips} см
+
+Плечо: ${shoulders} см
+
+
+
+РЕЗУЛЬТАТЫ РАСЧЁТОВ
+
+
+${result}
+
+
+
+РЕКОМЕНДАЦИИ
+
+
+____________________________________
+
+
+____________________________________
+
+
+____________________________________
+
+`;
+
+
 
     let doc = new Document({
 
@@ -17,13 +84,21 @@ function createWordReport() {
 
                 children: [
 
-                    createTitle(),
+                    new Paragraph({
 
-                    createPatientSection(patient),
+                        children: [
 
-                    createResultsSection(),
+                            new TextRun({
 
-                    createRecommendationsSection()
+                                text: text,
+
+                                size: 24
+
+                            })
+
+                        ]
+
+                    })
 
                 ]
 
@@ -33,174 +108,21 @@ function createWordReport() {
 
     });
 
-    Packer.toBlob(doc).then(blob => {
-
-        saveAs(blob, "NutriCalc_Консультация.docx");
-
-    });
-
-}
 
 
+    Packer.toBlob(doc)
 
-function getPatientData() {
+    .then(blob => {
 
-    return {
+        saveAs(
 
-        age: document.getElementById("age").value,
+            blob,
 
-        gender: document.getElementById("gender").value,
+            "NutriCalc_Консультация.docx"
 
-        weight: document.getElementById("weight").value,
-
-        height: document.getElementById("height").value,
-
-        waist: document.getElementById("waist").value,
-
-        hips: document.getElementById("hips").value,
-
-        shoulders: document.getElementById("shoulders").value
-
-    };
-
-}
-
-
-
-function createTitle() {
-
-    return new Paragraph({
-
-        children: [
-
-            new TextRun({
-
-                text: "NutriCalc",
-
-                bold: true,
-
-                size: 36
-
-            })
-
-        ],
-
-        spacing: {
-
-            after: 300
-
-        }
+        );
 
     });
 
-}
-
-
-
-function createPatientSection(patient) {
-
-    return new Paragraph({
-
-        children: [
-
-            new TextRun({
-
-                text:
-`ДАННЫЕ ПАЦИЕНТА
-
-Возраст: ${patient.age}
-
-Пол: ${patient.gender}
-
-Рост: ${patient.height} см
-
-Вес: ${patient.weight} кг
-
-Талия: ${patient.waist} см
-
-Бёдра: ${patient.hips} см
-
-Плечо: ${patient.shoulders} см
-`,
-
-                size: 24
-
-            })
-
-        ],
-
-        spacing: {
-
-            after: 300
-
-        }
-
-    });
-
-}
-
-
-
-function createResultsSection() {
-
-    let result = document.getElementById("result").innerText;
-
-    return new Paragraph({
-
-        children: [
-
-            new TextRun({
-
-                text:
-`РЕЗУЛЬТАТЫ РАСЧЁТОВ
-
-${result}
-`,
-
-                size: 24
-
-            })
-
-        ],
-
-        spacing: {
-
-            after: 300
-
-        }
-
-    });
-
-}
-
-
-
-function createRecommendationsSection() {
-
-    return new Paragraph({
-
-        children: [
-
-            new TextRun({
-
-                text:
-`РЕКОМЕНДАЦИИ
-
-_____________________________________
-
-_____________________________________
-
-_____________________________________
-
-_____________________________________
-`,
-
-                size: 24
-
-            })
-
-        ]
-
-    });
 
 }

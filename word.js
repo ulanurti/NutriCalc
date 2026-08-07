@@ -9,7 +9,13 @@ function createWordReport() {
 
 
     let age = document.getElementById("age")?.value || "-";
-    let gender = document.getElementById("gender")?.value || "-";
+    let gender = document.getElementById("gender")?.value || "-";let genderText = gender;
+
+if (gender === "female") {
+    genderText = "Женский";
+} else if (gender === "male") {
+    genderText = "Мужской";
+}
 
     let weight = document.getElementById("weight")?.value || "-";
     let height = document.getElementById("height")?.value || "-";

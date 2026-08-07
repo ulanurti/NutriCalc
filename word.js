@@ -46,7 +46,7 @@ if (gender === "female") {
 
 Возраст: ${age}
 
-Пол: ${gender}
+Пол: ${genderText}
 
 Рост: ${height} см
 

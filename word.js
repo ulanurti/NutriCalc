@@ -65,7 +65,7 @@ nutritionRules[patientCategory].name;
 
 
 РЕЗУЛЬТАТЫ РАСЧЁТОВ
-
+Категория пациента: ${categoryName}
 
 ${result}
 

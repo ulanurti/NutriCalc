@@ -16,7 +16,11 @@ if (gender === "female") {
 } else if (gender === "male") {
     genderText = "Мужской";
 }
+let patientCategory =
+document.getElementById("patientCategory")?.value || "healthy";
 
+let categoryName =
+nutritionRules[patientCategory].name;
     let weight = document.getElementById("weight")?.value || "-";
     let height = document.getElementById("height")?.value || "-";
 

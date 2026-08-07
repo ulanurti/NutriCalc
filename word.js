@@ -8,185 +8,159 @@ function createWordReport() {
     } = docx;
 
 
+    // Данные пациента
     let age = document.getElementById("age")?.value || "-";
-    let gender = document.getElementById("gender")?.value || "-";let genderText = gender;
+    let gender = document.getElementById("gender")?.value || "-";
 
-if (gender === "female") {
-    genderText = "Женский";
-} else if (gender === "male") {
-    genderText = "Мужской";
-}
-let patientCategory =
-document.getElementById("patientCategory")?.value || "healthy";
-
-let categoryName =
-nutritionRules[patientCategory].name;
     let weight = document.getElementById("weight")?.value || "-";
     let height = document.getElementById("height")?.value || "-";
 
     let waist = document.getElementById("waist")?.value || "-";
     let hips = document.getElementById("hips")?.value || "-";
-    let shoulders = document.getElementById("shoulders")?.value || "-";
+    let shoulder = document.getElementById("shoulder")?.value || "-";
 
 
-    let result = document.getElementById("result")?.innerText ||
-    "Расчёты не выполнены";
-
-
-    let date = new Date().toLocaleDateString("ru-RU");
-
-
-
-    let text = `
-══════════════════════════════════════
-             NutriCalc
-      Консультация по питанию
-══════════════════════════════════════
-
-Дата: ${date}
-
-──────────────────────────────────────
-          ДАННЫЕ ПАЦИЕНТА
-──────────────────────────────────────
-
-Возраст: ${age} лет
-Пол: ${genderText}
-Рост: ${height} см
-Вес: ${weight} кг
-Талия: ${waist} см
-Бёдра: ${hips} см
-Плечо: ${shoulders} см
-
-──────────────────────────────────────
-        РЕЗУЛЬТАТЫ РАСЧЁТОВ
-──────────────────────────────────────
-
-Категория пациента: ${categoryName}
-
-${result}
-
-──────────────────────────────────────
-          РЕКОМЕНДАЦИИ
-──────────────────────────────────────
-
-• Соблюдать рассчитанную калорийность.
-
-• Соблюдать рекомендуемое количество белков, жиров и углеводов.
-
-• Контролировать массу тела не реже 1 раза в неделю.
-
-• Поддерживать адекватную физическую активность.
-
-• Повторная консультация через 1 месяц.
-
-──────────────────────────────────────
-Заключение врача:
-
-______________________________________________________
-
-______________________________________________________
-
-______________________________________________________
-
-______________________________________________________
-
-Подпись специалиста: _________________________________
-`;
-
-`NutriCalc
-
-Консультация по питанию
-
-Дата: ${date}
-
-
-ДАННЫЕ ПАЦИЕНТА
-
-Возраст: ${age}
-
-Пол: ${genderText}
-
-Рост: ${height} см
-
-Вес: ${weight} кг
-
-Талия: ${waist} см
-
-Бёдра: ${hips} см
-
-Плечо: ${shoulders} см
-
-
-
-РЕЗУЛЬТАТЫ РАСЧЁТОВ
-Категория пациента: ${categoryName}
-
-${result}
-
-
-
-РЕКОМЕНДАЦИИ
-
-
-____________________________________
-
-
-____________________________________
-
-
-____________________________________
-
-`;
-
+    // Результаты расчётов
+    let result = document.getElementById("result")?.innerText || "";
 
 
     let doc = new Document({
 
         sections: [
-
             {
+                properties: {},
 
                 children: [
 
                     new Paragraph({
-
                         children: [
-
                             new TextRun({
-
-                                text: text,
-
-                                size: 24
-
+                                text: "NutriCalc",
+                                bold: true,
+                                size: 32
                             })
+                        ],
+                        alignment: "center"
+                    }),
 
+
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "Консультация по питанию",
+                                bold: true,
+                                size: 24
+                            })
+                        ],
+                        alignment: "center"
+                    }),
+
+
+                    new Paragraph("Дата: " + new Date().toLocaleDateString()),
+
+
+
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "ДАННЫЕ ПАЦИЕНТА",
+                                bold: true,
+                                size: 24
+                            })
                         ]
+                    }),
 
-                    })
+
+                    new Paragraph("Возраст: " + age + " лет"),
+
+                    new Paragraph("Пол: " + gender),
+
+                    new Paragraph("Рост: " + height + " см"),
+
+                    new Paragraph("Вес: " + weight + " кг"),
+
+                    new Paragraph("Талия: " + waist + " см"),
+
+                    new Paragraph("Бёдра: " + hips + " см"),
+
+                    new Paragraph("Плечо: " + shoulder + " см"),
+
+
+
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "РЕЗУЛЬТАТЫ РАСЧЁТОВ",
+                                bold: true,
+                                size: 24
+                            })
+                        ]
+                    }),
+
+
+                    new Paragraph(result),
+
+
+
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "РЕКОМЕНДАЦИИ",
+                                bold: true,
+                                size: 24
+                            })
+                        ]
+                    }),
+
+
+                    new Paragraph("• Соблюдать рассчитанную энергетическую ценность рациона."),
+
+                    new Paragraph("• Соблюдать рекомендуемое количество белков, жиров и углеводов."),
+
+                    new Paragraph("• Контролировать массу тела не реже 1 раза в неделю."),
+
+                    new Paragraph("• Поддерживать адекватную физическую активность."),
+
+                    new Paragraph("• Повторная консультация через 1 месяц."),
+
+
+
+                    new Paragraph({
+                        children: [
+                            new TextRun({
+                                text: "ЗАКЛЮЧЕНИЕ ВРАЧА",
+                                bold: true,
+                                size: 24
+                            })
+                        ]
+                    }),
+
+
+                    new Paragraph(""),
+
+                    new Paragraph("____________________________________"),
+
+                    new Paragraph("____________________________________"),
+
+                    new Paragraph("____________________________________"),
+
+
+
+                    new Paragraph("Подпись специалиста:"),
+
+                    new Paragraph("____________________________________")
 
                 ]
-
             }
-
         ]
-
     });
 
 
 
-    Packer.toBlob(doc)
+    Packer.toBlob(doc).then(blob => {
 
-    .then(blob => {
-
-        saveAs(
-
-            blob,
-
-            "NutriCalc_Консультация.docx"
-
-        );
+        saveAs(blob, "NutriCalc_Консультация.docx");
 
     });
-
 
 }

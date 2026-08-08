@@ -1,116 +1,120 @@
 function createWordReport() {
 
-    const {
-        Document,
-        Packer,
-        Paragraph,
-        TextRun
-    } = docx;
+
+const {
+    Document,
+    Packer,
+    Paragraph,
+    TextRun
+} = docx;
 
 
-    // ======================================================
-    // ДАННЫЕ ПАЦИЕНТА
-    // ======================================================
 
-    let age =
-        document.getElementById("age")?.value || "-";
-
-    let genderElement =
-        document.getElementById("gender");
-
-    let gender =
-        genderElement
-            ? genderElement.options[genderElement.selectedIndex]?.text
-            : "-";
+// ======================================================
+// ДАННЫЕ ПАЦИЕНТА
+// ======================================================
 
 
-    let weight =
-        document.getElementById("weight")?.value || "-";
-
-    let height =
-        document.getElementById("height")?.value || "-";
-
-    let waist =
-        document.getElementById("waist")?.value || "-";
-
-    let hips =
-        document.getElementById("hips")?.value || "-";
-
-    // В движке используется именно "shoulders"
-    let shoulders =
-        document.getElementById("shoulders")?.value || "-";
+let age =
+    document.getElementById("age")?.value || "-";
 
 
-    // ======================================================
-    // КАТЕГОРИЯ ПАЦИЕНТА
-    // ======================================================
-
-    let patientCategoryElement =
-        document.getElementById("patientCategory");
-
-    let patientCategory =
-        patientCategoryElement
-            ? patientCategoryElement
-                .options[
-                    patientCategoryElement.selectedIndex
-                ]?.text
-            : "Здоровый человек";
+let genderElement =
+    document.getElementById("gender");
 
 
-    // ======================================================
-    // ЦЕЛЬ КОНСУЛЬТАЦИИ
-    // ======================================================
-
-    let goalElement =
-        document.getElementById("goal");
-
-    let goal =
-        goalElement
-            ? goalElement
-                .options[
-                    goalElement.selectedIndex
-                ]?.text
-            : "Поддержание массы тела";
+let gender =
+    genderElement
+        ? genderElement.options[
+            genderElement.selectedIndex
+        ].text
+        : "-";
 
 
-    // ======================================================
-    // РЕЗУЛЬТАТЫ РАСЧЁТОВ
-    // ======================================================
 
-    let result =
-        document.getElementById("result")?.innerText || "";
+let weight =
+    document.getElementById("weight")?.value || "-";
 
 
-    // ======================================================
-    // ПРЕОБРАЗУЕМ РЕЗУЛЬТАТЫ В ОТДЕЛЬНЫЕ СТРОКИ
-    // ======================================================
-
-    let resultParagraphs = [];
+let height =
+    document.getElementById("height")?.value || "-";
 
 
-    let resultLines =
-        result.split("\n");
+let waist =
+    document.getElementById("waist")?.value || "-";
 
 
-    for (
-        let i = 0;
-        i < resultLines.length;
-        i++
-    ) {
-
-        let line =
-            resultLines[i].trim();
+let hips =
+    document.getElementById("hips")?.value || "-";
 
 
-        if (line === "") {
+let shoulder =
+    document.getElementById("shoulder")?.value || "-";
 
-            resultParagraphs.push(
-                new Paragraph("")
-            );
 
-            continue;
 
-        }
+
+
+// ======================================================
+// КАТЕГОРИЯ И ЦЕЛЬ
+// ======================================================
+
+
+let patientCategoryElement =
+    document.getElementById("patientCategory");
+
+
+let patientCategory =
+    patientCategoryElement
+        ? patientCategoryElement.options[
+            patientCategoryElement.selectedIndex
+        ].text
+        : "-";
+
+
+
+
+let goalElement =
+    document.getElementById("goal");
+
+
+let goal =
+    goalElement
+        ? goalElement.options[
+            goalElement.selectedIndex
+        ].text
+        : "-";
+
+
+
+
+
+// ======================================================
+// РЕЗУЛЬТАТЫ С ЭКРАНА
+// ======================================================
+
+
+let result =
+    document.getElementById("result")?.innerText || "";
+
+
+
+let resultParagraphs = [];
+
+
+
+result.split("\n").forEach(line => {
+
+
+    if (line.trim() === "") {
+
+
+        resultParagraphs.push(
+            new Paragraph("")
+        );
+
+
+    } else {
 
 
         resultParagraphs.push(
@@ -133,394 +137,342 @@ function createWordReport() {
 
         );
 
+
     }
 
 
+});
 
-    // ======================================================
-    // СОЗДАНИЕ WORD-ДОКУМЕНТА
-    // ======================================================
 
-    let doc =
-        new Document({
 
-            sections: [
 
-                {
 
-                    properties: {},
 
-                    children: [
+// ======================================================
+// СОЗДАНИЕ ДОКУМЕНТА
+// ======================================================
 
 
-                        // ==================================
-                        // ЗАГОЛОВОК
-                        // ==================================
+let doc =
 
-                        new Paragraph({
+new Document({
 
-                            children: [
+sections: [{
 
-                                new TextRun({
+properties: {},
 
-                                    text: "NutriCalc",
 
-                                    bold: true,
+children: [
 
-                                    size: 32
 
-                                })
 
-                            ],
+new Paragraph({
 
-                            alignment: "center"
+children:[
 
-                        }),
+new TextRun({
 
+text:"NutriCalc",
 
-                        new Paragraph({
+bold:true,
 
-                            children: [
+size:32
 
-                                new TextRun({
+})
 
-                                    text:
-                                        "Консультация по питанию",
+],
 
-                                    bold: true,
+alignment:"center"
 
-                                    size: 24
+}),
 
-                                })
 
-                            ],
 
-                            alignment: "center"
+new Paragraph({
 
-                        }),
+children:[
 
+new TextRun({
 
-                        new Paragraph(""),
+text:"Консультация по питанию",
 
+bold:true,
 
-                        new Paragraph({
+size:24
 
-                            children: [
+})
 
-                                new TextRun({
+],
 
-                                    text:
-                                        "Дата: " +
-                                        new Date()
-                                            .toLocaleDateString(),
+alignment:"center"
 
-                                    size: 22
+}),
 
-                                })
 
-                            ]
 
-                        }),
+new Paragraph(
+"Дата: " +
+new Date().toLocaleDateString()
+),
 
 
-                        new Paragraph(""),
 
 
+// ===============================
+// ДАННЫЕ
+// ===============================
 
-                        // ==================================
-                        // ДАННЫЕ ПАЦИЕНТА
-                        // ==================================
 
-                        new Paragraph({
+new Paragraph(""),
 
-                            children: [
+new Paragraph({
 
-                                new TextRun({
+children:[
 
-                                    text:
-                                        "ДАННЫЕ ПАЦИЕНТА",
+new TextRun({
 
-                                    bold: true,
+text:"ДАННЫЕ ПАЦИЕНТА",
 
-                                    size: 24
+bold:true,
 
-                                })
+size:24
 
-                            ]
+})
 
-                        }),
+]
 
+}),
 
-                        new Paragraph(
-                            "Возраст: " +
-                            age +
-                            " лет"
-                        ),
 
+new Paragraph("Возраст: " + age + " лет"),
 
-                        new Paragraph(
-                            "Пол: " +
-                            gender
-                        ),
+new Paragraph("Пол: " + gender),
 
+new Paragraph("Рост: " + height + " см"),
 
-                        new Paragraph(
-                            "Рост: " +
-                            height +
-                            " см"
-                        ),
+new Paragraph("Вес: " + weight + " кг"),
 
+new Paragraph("Талия: " + waist + " см"),
 
-                        new Paragraph(
-                            "Вес: " +
-                            weight +
-                            " кг"
-                        ),
+new Paragraph("Бёдра: " + hips + " см"),
 
+new Paragraph("Плечо: " + shoulder + " см"),
 
-                        new Paragraph(
-                            "Талия: " +
-                            waist +
-                            " см"
-                        ),
 
 
-                        new Paragraph(
-                            "Бёдра: " +
-                            hips +
-                            " см"
-                        ),
 
+// ===============================
+// КАТЕГОРИЯ
+// ===============================
 
-                        new Paragraph(
-                            "Плечо: " +
-                            shoulders +
-                            " см"
-                        ),
 
+new Paragraph(""),
 
-                        new Paragraph(""),
+new Paragraph({
 
+children:[
 
+new TextRun({
 
-                        // ==================================
-                        // КАТЕГОРИЯ И ЦЕЛЬ
-                        // ==================================
+text:"КАТЕГОРИЯ ПАЦИЕНТА И ЦЕЛЬ",
 
-                        new Paragraph({
+bold:true,
 
-                            children: [
+size:24
 
-                                new TextRun({
+})
 
-                                    text:
-                                        "КАТЕГОРИЯ И ЦЕЛЬ",
+]
 
-                                    bold: true,
+}),
 
-                                    size: 24
 
-                                })
+new Paragraph(
+"Категория пациента: " +
+patientCategory
+),
 
-                            ]
 
-                        }),
+new Paragraph(
+"Цель консультации: " +
+goal
+),
 
 
-                        new Paragraph(
-                            "Категория пациента: " +
-                            patientCategory
-                        ),
 
 
-                        new Paragraph(
-                            "Цель консультации: " +
-                            goal
-                        ),
 
+// ===============================
+// РАСЧЁТЫ
+// ===============================
 
-                        new Paragraph(""),
 
+new Paragraph(""),
 
+new Paragraph({
 
-                        // ==================================
-                        // РЕЗУЛЬТАТЫ
-                        // ==================================
+children:[
 
-                        new Paragraph({
+new TextRun({
 
-                            children: [
+text:"РЕЗУЛЬТАТЫ РАСЧЁТОВ",
 
-                                new TextRun({
+bold:true,
 
-                                    text:
-                                        "РЕЗУЛЬТАТЫ РАСЧЁТОВ",
+size:24
 
-                                    bold: true,
+})
 
-                                    size: 24
+]
 
-                                })
+}),
 
-                            ]
 
-                        }),
 
+...resultParagraphs,
 
-                        // Здесь автоматически попадает
-                        // новый результат движка
-                        ...resultParagraphs,
 
 
-                        new Paragraph(""),
 
 
+// ===============================
+// РЕКОМЕНДАЦИИ
+// ===============================
 
-                        // ==================================
-                        // РЕКОМЕНДАЦИИ
-                        // ==================================
 
-                        new Paragraph({
+new Paragraph(""),
 
-                            children: [
+new Paragraph({
 
-                                new TextRun({
+children:[
 
-                                    text:
-                                        "РЕКОМЕНДАЦИИ",
+new TextRun({
 
-                                    bold: true,
+text:"РЕКОМЕНДАЦИИ",
 
-                                    size: 24
+bold:true,
 
-                                })
+size:24
 
-                            ]
+})
 
-                        }),
+]
 
+}),
 
-                        new Paragraph(
-                            "• Соблюдать рассчитанную " +
-                            "энергетическую ценность рациона."
-                        ),
 
 
-                        new Paragraph(
-                            "• Соблюдать рассчитанный " +
-                            "диапазон белков, жиров и углеводов."
-                        ),
+new Paragraph(
+"• Использовать рассчитанный диапазон энергетической ценности рациона."
+),
 
 
-                        new Paragraph(
-                            "• Окончательное количество белка " +
-                            "определяется врачом с учётом " +
-                            "клинической ситуации."
-                        ),
+new Paragraph(
+"• Белок рассчитывается согласно категории пациента и клинической ситуации."
+),
 
 
-                        new Paragraph(
-                            "• Контролировать массу тела " +
-                            "не реже 1 раза в неделю."
-                        ),
+new Paragraph(
+"• При ожирении и ХБП учитываются фактическая и скорректированная масса тела."
+),
 
 
-                        new Paragraph(
-                            "• Поддерживать адекватную " +
-                            "физическую активность."
-                        ),
+new Paragraph(
+"• Жиры рассчитываются как 30% энергетической ценности рациона."
+),
 
 
-                        new Paragraph(
-                            "• Повторная консультация " +
-                            "через 1 месяц."
-                        ),
+new Paragraph(
+"• Углеводы рассчитываются как остаток энергии после учёта белков и жиров."
+),
 
 
-                        new Paragraph(""),
+new Paragraph(
+"• Окончательный выбор диапазона проводит врач."
+),
 
 
 
-                        // ==================================
-                        // ЗАКЛЮЧЕНИЕ
-                        // ==================================
 
-                        new Paragraph({
 
-                            children: [
+// ===============================
+// ЗАКЛЮЧЕНИЕ
+// ===============================
 
-                                new TextRun({
 
-                                    text:
-                                        "ЗАКЛЮЧЕНИЕ ВРАЧА",
+new Paragraph(""),
 
-                                    bold: true,
+new Paragraph({
 
-                                    size: 24
+children:[
 
-                                })
+new TextRun({
 
-                            ]
+text:"ЗАКЛЮЧЕНИЕ ВРАЧА",
 
-                        }),
+bold:true,
 
+size:24
 
-                        new Paragraph(""),
+})
 
+]
 
-                        new Paragraph(
-                            "____________________________________________"
-                        ),
+}),
 
 
-                        new Paragraph(
-                            "____________________________________________"
-                        ),
 
+new Paragraph(""),
 
-                        new Paragraph(
-                            "____________________________________________"
-                        ),
+new Paragraph(
+"____________________________________________"
+),
 
+new Paragraph(
+"____________________________________________"
+),
 
-                        new Paragraph(
-                            "____________________________________________"
-                        ),
 
+new Paragraph(
+"Подпись специалиста:"
+),
 
-                        new Paragraph(""),
 
+new Paragraph(
+"____________________________________________"
+)
 
-                        new Paragraph(
-                            "Подпись специалиста:"
-                        ),
 
 
-                        new Paragraph(
-                            "____________________________________________"
-                        )
+]
 
-                    ]
 
-                }
+}]
 
-            ]
+});
 
-        });
 
 
 
-    // ======================================================
-    // СОХРАНЕНИЕ WORD
-    // ======================================================
 
-    Packer.toBlob(doc).then(blob => {
+// ======================================================
+// СОХРАНЕНИЕ
+// ======================================================
 
-        saveAs(
-            blob,
-            "NutriCalc_Консультация.docx"
-        );
 
-    });
+Packer.toBlob(doc).then(blob => {
+
+
+saveAs(
+
+blob,
+
+"NutriCalc_Консультация.docx"
+
+);
+
+
+});
+
 
 }

@@ -1,5 +1,8 @@
 // ==========================================================
-// NutriCalc — ОСНОВНОЙ ДВИЖОК
+// NutriCalc
+// ДВИЖОК РАСЧЁТОВ ПИТАНИЯ
+// Новая логика:
+// BMR (Миффлин + Харрис) → EAR → цель → КБЖУ
 // ==========================================================
 
 
@@ -22,10 +25,35 @@ let patient = {
 
 
 // ==========================================================
-// КЛИНИЧЕСКИЕ ПРАВИЛА NutriCalc
+// КЛИНИЧЕСКИЕ ПРАВИЛА
+// ==========================================================
+//
+// ВАЖНО:
+//
+// Энергетическая ценность НЕ считается по ккал/кг.
+//
+// Энергия:
+// фактическая масса тела
+// ↓
+// BMR
+// ↓
+// EAR
+// ↓
+// коррекция цели
+//
+// Белок:
+// фактическая + скорректированная масса тела
+//
+// Жиры:
+// 30% энергии
+//
+// Углеводы:
+// остаток энергии
 // ==========================================================
 
-let clinicalRules = {
+
+let nutritionRules = {
+
 
 
     // ------------------------------------------------------
@@ -43,13 +71,14 @@ let clinicalRules = {
     },
 
 
+
     // ------------------------------------------------------
     // ОЖИРЕНИЕ БЕЗ ХБП
     // ------------------------------------------------------
 
     obesity: {
 
-        name: "Ожирение без ХБП",
+        name: "Ожирение",
 
         protein: [1.2, 1.5],
 
@@ -58,13 +87,14 @@ let clinicalRules = {
     },
 
 
+
     // ------------------------------------------------------
-    // ХБП 1–2
+    // ХБП 1-2 СТАДИЯ
     // ------------------------------------------------------
 
     ckd12: {
 
-        name: "ХБП 1–2 стадия",
+        name: "ХБП 1-2 стадия",
 
         protein: [0.8, 1.0],
 
@@ -73,19 +103,21 @@ let clinicalRules = {
     },
 
 
+
     // ------------------------------------------------------
-    // ХБП 3–4
+    // ХБП 3-4 СТАДИЯ
     // ------------------------------------------------------
 
     ckd34: {
 
-        name: "ХБП 3–4 стадия",
+        name: "ХБП 3-4 стадия",
 
         protein: [0.6, 0.8],
 
         fatPercent: 30
 
     },
+
 
 
     // ------------------------------------------------------
@@ -104,63 +136,19 @@ let clinicalRules = {
 
 
     // ------------------------------------------------------
-    // ОЖИРЕНИЕ + ХБП 1–2
-    // ------------------------------------------------------
-
-    ckd12_obesity: {
-
-        name: "Ожирение + ХБП 1–2 стадия",
-
-        protein: [0.8, 1.0],
-
-        fatPercent: 30
-
-    },
-
-
-    // ------------------------------------------------------
-    // ОЖИРЕНИЕ + ХБП 3–4
-    // ------------------------------------------------------
-
-    ckd34_obesity: {
-
-        name: "Ожирение + ХБП 3–4 стадия",
-
-        protein: [0.6, 0.8],
-
-        fatPercent: 30
-
-    },
-
-
-    // ------------------------------------------------------
-    // ОЖИРЕНИЕ + ГЕМОДИАЛИЗ
-    // ------------------------------------------------------
-
-    dialysis_obesity: {
-
-        name: "Ожирение + гемодиализ",
-
-        protein: [1.2, 1.4],
-
-        fatPercent: 30
-
-    },
-
-
-    // ------------------------------------------------------
-    // ЦИРРОЗ
+    // ЦИРРОЗ ПЕЧЕНИ
     // ------------------------------------------------------
 
     cirrhosis: {
 
         name: "Цирроз печени",
 
-        protein: null,
+        protein: [1.2, 1.5],
 
         fatPercent: 30
 
     },
+
 
 
     // ------------------------------------------------------
@@ -171,11 +159,12 @@ let clinicalRules = {
 
         name: "Беременность",
 
-        protein: null,
+        protein: [1.1, 1.3],
 
         fatPercent: 30
 
     },
+
 
 
     // ------------------------------------------------------
@@ -186,11 +175,12 @@ let clinicalRules = {
 
         name: "Грудное вскармливание",
 
-        protein: null,
+        protein: [1.1, 1.3],
 
         fatPercent: 30
 
     },
+
 
 
     // ------------------------------------------------------
@@ -205,1678 +195,872 @@ let clinicalRules = {
 
         fatPercent: 30
 
-    },
-
-
-    // ------------------------------------------------------
-    // НЕДОСТАТОЧНАЯ МАССА / АНОРЕКСИЯ
-    // ------------------------------------------------------
-
-    anorexia: {
-
-        name: "Недостаточная масса тела",
-
-        protein: [1.2, 1.5],
-
-        fatPercent: 30
-
     }
 
 };
-
-
-
 // ==========================================================
 // ЦЕЛИ КОНСУЛЬТАЦИИ
 // ==========================================================
+//
+// Дефицит считается от EAR:
+//
+// - поддержание: 0%
+//
+// - снижение 15%:
+//   EAR - 15%
+//
+// - снижение 20%:
+//   EAR - 20%
+//
+// - набор массы:
+//   увеличение EAR на заданный процент
+// ==========================================================
+
 
 let consultationModes = {
 
-
-    // ------------------------------------------------------
-    // ПОДДЕРЖАНИЕ
-    // ------------------------------------------------------
 
     maintain: {
 
         name: "Поддержание массы тела",
 
-        reduction: 0
+        reduction: 0,
+
+        increase: 0
 
     },
 
 
-    // ------------------------------------------------------
-    // СНИЖЕНИЕ НА 15%
-    // ------------------------------------------------------
+    weightLoss15: {
 
-    loss15: {
+        name: "Снижение массы тела на 15%",
 
-        name: "Снижение энергетической ценности на 15%",
+        reduction: 0.15,
 
-        reduction: 0.15
+        increase: 0
 
     },
 
 
-    // ------------------------------------------------------
-    // СНИЖЕНИЕ НА 20%
-    // ------------------------------------------------------
+    weightLoss20: {
 
-    loss20: {
+        name: "Снижение массы тела на 20%",
 
-        name: "Снижение энергетической ценности на 20%",
+        reduction: 0.20,
 
-        reduction: 0.20
+        increase: 0
 
     },
 
-
-    // ------------------------------------------------------
-    // НАБОР МАССЫ
-    // ------------------------------------------------------
 
     weightGain: {
 
-        name: "Набор массы",
+        name: "Набор массы тела",
+
+        reduction: 0,
 
         increase: 0.15
 
-    },
-
-
-    // ------------------------------------------------------
-    // НАБОР МЫШЦ
-    // ------------------------------------------------------
-
-    muscleGain: {
-
-        name: "Набор мышц",
-
-        increase: 0.10
-
     }
+
 
 };
 
 
 
 // ==========================================================
-// ГЛАВНАЯ ФУНКЦИЯ
+// ПОЛУЧЕНИЕ ДАННЫХ ПАЦИЕНТА
 // ==========================================================
 
-function calculateAll() {
 
-
-    // ------------------------------------------------------
-    // Основные расчёты
-    // ------------------------------------------------------
-
-    let bmiResult =
-        getBMI();
-
-
-    let idealWeightResult =
-        calculateIdealWeight();
-
-
-    let correctedWeightResult =
-        calculateCorrectedWeight();
-
-
-    let bmrResult =
-        calculateBMR();
-
-
-    let earResult =
-        calculateEAR();
-
-
-    // ------------------------------------------------------
-    // Категория пациента
-    // ------------------------------------------------------
-
-    let patientCategoryElement =
-        document.getElementById("patientCategory");
-
-
-    let patientCategory =
-        patientCategoryElement
-            ? patientCategoryElement.value
-            : "healthy";
-
-
-    // ------------------------------------------------------
-    // Цель
-    // ------------------------------------------------------
-
-    let goalElement =
-        document.getElementById("goal");
-
-
-    let goal =
-        goalElement
-            ? goalElement.value
-            : "maintain";
-
-
-    // ------------------------------------------------------
-    // Расчёт КБЖУ
-    // ------------------------------------------------------
-
-    let macros =
-        calculateMacros(
-            goal,
-            patientCategory
-        );
-
-
-    // ------------------------------------------------------
-    // Сохраняем консультацию
-    // ------------------------------------------------------
-
-    saveConsultation();
-
-
-    // ------------------------------------------------------
-    // Формируем результат
-    // ------------------------------------------------------
-
-    let resultHTML =
-
-        "<h3>Результаты консультации</h3>" +
-
-
-        "<b>Категория пациента:</b> " +
-        (
-            clinicalRules[patientCategory]
-                ? clinicalRules[patientCategory].name
-                : "-"
-        ) +
-
-        "<br>" +
-
-
-        "<b>Цель:</b> " +
-        (
-            consultationModes[goal]
-                ? consultationModes[goal].name
-                : "-"
-        ) +
-
-        "<br><br>" +
-
-
-        "<b>ИМТ:</b> " +
-        bmiResult.bmi.toFixed(1) +
-
-        "<br>" +
-
-
-        "<b>Категория ИМТ:</b> " +
-        bmiResult.category +
-
-        "<br><br>" +
-
-
-        "<b>Идеальная масса:</b> " +
-        Math.round(idealWeightResult) +
-        " кг" +
-
-        "<br>" +
-
-
-        "<b>Скорректированная масса:</b> " +
-        Math.round(correctedWeightResult) +
-        " кг" +
-
-        "<br><br>" +
-
-
-        "<b>BMR:</b> " +
-        Math.round(bmrResult) +
-        " ккал/сут" +
-
-        "<br>" +
-
-
-        "<b>EAR:</b> " +
-        Math.round(earResult) +
-        " ккал/сут" +
-
-        "<br><br>";
-
-
-    // ------------------------------------------------------
-    // ЭНЕРГИЯ
-    // ------------------------------------------------------
-
-    if (macros && macros.energy) {
-
-
-        resultHTML +=
-
-            "<b>Энергетическая ценность:</b><br>" +
-
-
-            "По скорректированной массе: " +
-            Math.round(macros.energy.baseMin) +
-            " ккал/сут" +
-
-            "<br>" +
-
-
-            "По фактической массе: " +
-            Math.round(macros.energy.baseMax) +
-            " ккал/сут" +
-
-            "<br>" +
-
-
-            "Расчётный диапазон: " +
-            Math.round(macros.energy.baseMin) +
-            "–" +
-            Math.round(macros.energy.baseMax) +
-            " ккал/сут" +
-
-            "<br>";
-
-
-        if (macros.energy.reduction > 0) {
-
-
-            resultHTML +=
-
-                "После снижения на " +
-                Math.round(
-                    macros.energy.reduction * 100
-                ) +
-                "%: " +
-
-                Math.round(
-                    macros.energy.caloriesMin
-                ) +
-
-                "–" +
-
-                Math.round(
-                    macros.energy.caloriesMax
-                ) +
-
-                " ккал/сут" +
-
-                "<br>";
-
-        }
-
-
-        resultHTML +=
-
-            "<br>";
-
-    }
-
-
-
-    // ------------------------------------------------------
-    // БЕЛОК
-    // ------------------------------------------------------
-
-    if (macros && macros.protein) {
-
-
-        let p =
-            macros.protein;
-
-
-        resultHTML +=
-
-            "<b>Белок:</b><br>" +
-
-
-            "Скорректированная масса " +
-            p.correctedWeight +
-            " кг × " +
-            p.proteinLow +
-            " г/кг = " +
-            p.correctedLow +
-            " г/сут" +
-
-            "<br>" +
-
-
-            "Скорректированная масса " +
-            p.correctedWeight +
-            " кг × " +
-            p.proteinHigh +
-            " г/кг = " +
-            p.correctedHigh +
-            " г/сут" +
-
-            "<br>" +
-
-
-            "Фактическая масса " +
-            p.actualWeight +
-            " кг × " +
-            p.proteinLow +
-            " г/кг = " +
-            p.actualLow +
-            " г/сут" +
-
-            "<br>" +
-
-
-            "Фактическая масса " +
-            p.actualWeight +
-            " кг × " +
-            p.proteinHigh +
-            " г/кг = " +
-            p.actualHigh +
-            " г/сут" +
-
-            "<br>" +
-
-
-            "<b>Расчётный диапазон белка: </b>" +
-            p.min +
-            "–" +
-            p.max +
-            " г/сут" +
-
-            "<br><br>" +
-
-
-            "<b>Окончательное количество белка выбирает врач.</b>" +
-
-            "<br><br>";
-
-    }
-
-
-
-    // ------------------------------------------------------
-    // ЖИРЫ
-    // ------------------------------------------------------
-
-    if (macros && macros.fat) {
-
-
-        resultHTML +=
-
-            "<b>Жиры:</b> " +
-
-            macros.fat.min +
-            "–" +
-            macros.fat.max +
-            " г/сут" +
-
-            " (" +
-            macros.fat.percent +
-            "% энергии)" +
-
-            "<br>";
-
-    }
-
-
-
-    // ------------------------------------------------------
-    // УГЛЕВОДЫ
-    // ------------------------------------------------------
-
-    if (macros && macros.carbohydrates) {
-
-
-        resultHTML +=
-
-            "<b>Углеводы:</b> " +
-
-            macros.carbohydrates.min +
-            "–" +
-            macros.carbohydrates.max +
-            " г/сут";
-
-    }
-
-
-
-    // ------------------------------------------------------
-    // Вывод
-    // ------------------------------------------------------
-
-    document.getElementById("result").innerHTML =
-        resultHTML;
-
-}
-
-
-
-// ==========================================================
-// ИМТ
-// ==========================================================
-
-function getBMI() {
+function getPatientData() {
 
 
     let weight =
         Number(
-            document.getElementById("weight").value
-        );
-
-
-    let heightCm =
-        Number(
-            document.getElementById("height").value
-        );
-
-
-    if (!weight || !heightCm) {
-
-
-        return {
-
-            bmi: 0,
-
-            category: "Нет данных"
-
-        };
-
-    }
-
-
-    let heightM =
-        heightCm / 100;
-
-
-    let bmi =
-        weight /
-        (heightM * heightM);
-
-
-    let category = "";
-
-
-    if (bmi < 18.5) {
-
-        category =
-            "Недостаточный вес";
-
-    }
-
-    else if (bmi < 25) {
-
-        category =
-            "Нормальный вес";
-
-    }
-
-    else if (bmi < 30) {
-
-        category =
-            "Избыточный вес";
-
-    }
-
-    else if (bmi < 35) {
-
-        category =
-            "Ожирение I степени";
-
-    }
-
-    else if (bmi < 40) {
-
-        category =
-            "Ожирение II степени";
-
-    }
-
-    else {
-
-        category =
-            "Ожирение III степени";
-
-    }
-
-
-    return {
-
-        bmi: bmi,
-
-        category: category
-
-    };
-
-}
-
-
-
-// ==========================================================
-// СОХРАНЕНИЕ КОНСУЛЬТАЦИИ
-// ==========================================================
-
-function saveConsultation() {
-
-
-    let weight =
-        Number(
-            document.getElementById("weight").value
+            document.getElementById("weight")?.value
         );
 
 
     let height =
         Number(
-            document.getElementById("height").value
-        );
-
-
-    let waist =
-        Number(
-            document.getElementById("waist").value
-        );
-
-
-    let hips =
-        Number(
-            document.getElementById("hips").value
-        );
-
-
-    let shoulders =
-        Number(
-            document.getElementById("shoulders").value
-        );
-
-
-    let bmiResult =
-        getBMI();
-
-
-    patient.height =
-        height;
-
-
-    patient.consultations.push({
-
-        date: new Date(),
-
-        weight: weight,
-
-        height: height,
-
-        waist: waist,
-
-        hips: hips,
-
-        shoulders: shoulders,
-
-        bmi: bmiResult.bmi
-
-    });
-
-}
-
-
-
-// ==========================================================
-// ОСНОВНОЙ ОБМЕН BMR
-// ==========================================================
-
-function calculateBMR() {
-
-
-    let weight =
-        Number(
-            document.getElementById("weight").value
-        );
-
-
-    let heightCm =
-        Number(
-            document.getElementById("height").value
+            document.getElementById("height")?.value
         );
 
 
     let age =
         Number(
-            document.getElementById("age").value
+            document.getElementById("age")?.value
         );
 
 
-    let genderElement =
-        document.getElementById("gender");
-
-
     let gender =
-        genderElement
-            ? genderElement.value
-            : "female";
+        document.getElementById("gender")?.value;
+
+
+
+    if (
+
+        !weight ||
+        !height ||
+        !age
+
+    ) {
+
+
+        return null;
+
+
+    }
+
+
+
+    return {
+
+
+        weight: weight,
+
+        height: height,
+
+        age: age,
+
+        gender: gender
+
+
+    };
+
+
+}
+
+
+
+
+
+// ==========================================================
+// ОСНОВНОЙ ОБМЕН
+// МИФФЛИН — САН ЖЕОР
+// ==========================================================
+
+
+function calculateBMRMifflin() {
+
+
+    let data =
+        getPatientData();
+
+
+
+    if (!data) {
+
+
+        return 0;
+
+
+    }
+
 
 
     let bmr;
 
 
-    if (gender === "male") {
+
+    if (data.gender === "male") {
+
 
 
         bmr =
 
-            10 * weight +
+            10 * data.weight +
 
-            6.25 * heightCm -
+            6.25 * data.height -
 
-            5 * age +
+            5 * data.age +
 
             5;
+
+
 
     }
 
     else {
 
 
+
         bmr =
 
-            10 * weight +
+            10 * data.weight +
 
-            6.25 * heightCm -
+            6.25 * data.height -
 
-            5 * age -
+            5 * data.age -
 
             161;
+
 
     }
 
 
+
     return bmr;
+
 
 }
 
 
 
+
+
 // ==========================================================
-// EAR
+// ОСНОВНОЙ ОБМЕН
+// ХАРРИС — БЕНЕДИКТ
 // ==========================================================
 
-function calculateEAR() {
+
+function calculateBMRHarris() {
 
 
-    let bmr =
-        calculateBMR();
+    let data =
+        getPatientData();
+
+
+
+    if (!data) {
+
+
+        return 0;
+
+
+    }
+
+
+
+    let bmr;
+
+
+
+    if (data.gender === "male") {
+
+
+
+        bmr =
+
+            66.5 +
+
+            13.75 * data.weight +
+
+            5.003 * data.height -
+
+            6.755 * data.age;
+
+
+
+    }
+
+    else {
+
+
+
+        bmr =
+
+            655.1 +
+
+            9.563 * data.weight +
+
+            1.850 * data.height -
+
+            4.676 * data.age;
+
+
+
+    }
+
+
+
+    return bmr;
+
+
+}
+// ==========================================================
+// КОЭФФИЦИЕНТ ФИЗИЧЕСКОЙ АКТИВНОСТИ
+// ==========================================================
+
+function getActivityCoefficient() {
 
 
     let activityElement =
         document.getElementById("activity");
 
 
-    let activity =
-        1.2;
+    let activity = 1.2;
 
 
     if (activityElement) {
 
 
         activity =
-            Number(
-                activityElement.value
-            ) || 1.2;
+            Number(activityElement.value) || 1.2;
+
 
     }
 
 
-    return bmr * activity;
+    return activity;
 
 }
 
 
 
+
+
 // ==========================================================
-// EAR ДЛЯ КОНКРЕТНОЙ МАССЫ
+// РАСЧЁТ EAR
+// По двум формулам BMR
+//
+// Возвращает диапазон:
+// EAR min — EAR max
 // ==========================================================
 
-function calculateEARForWeight(weight) {
+
+function calculateEAR() {
 
 
-    let heightCm =
-        Number(
-            document.getElementById("height").value
-        );
+    let bmrMifflin =
+        calculateBMRMifflin();
 
 
-    let age =
-        Number(
-            document.getElementById("age").value
-        );
 
+    let bmrHarris =
+        calculateBMRHarris();
 
-    let genderElement =
-        document.getElementById("gender");
-
-
-    let gender =
-        genderElement
-            ? genderElement.value
-            : "female";
-
-
-    let activityElement =
-        document.getElementById("activity");
 
 
     let activity =
-        activityElement
-            ? Number(activityElement.value) || 1.2
-            : 1.2;
+        getActivityCoefficient();
 
 
-    let bmr;
 
+    let earMifflin =
+        bmrMifflin * activity;
 
-    if (gender === "male") {
 
 
-        bmr =
+    let earHarris =
+        bmrHarris * activity;
 
-            10 * weight +
 
-            6.25 * heightCm -
-
-            5 * age +
-
-            5;
-
-    }
-
-    else {
-
-
-        bmr =
-
-            10 * weight +
-
-            6.25 * heightCm -
-
-            5 * age -
-
-            161;
-
-    }
-
-
-    return bmr * activity;
-
-}
-
-
-
-// ==========================================================
-// ИДЕАЛЬНЫЙ ВЕС — DEVINE
-// ==========================================================
-
-function calculateIdealWeight() {
-
-
-    let heightCm =
-        Number(
-            document.getElementById("height").value
-        );
-
-
-    let genderElement =
-        document.getElementById("gender");
-
-
-    let gender =
-        genderElement
-            ? genderElement.value
-            : "female";
-
-
-    let devine;
-
-
-    if (gender === "male") {
-
-
-        devine =
-
-            50 +
-            0.9 *
-            (heightCm - 152.4);
-
-    }
-
-    else {
-
-
-        devine =
-
-            45.5 +
-            0.9 *
-            (heightCm - 152.4);
-
-    }
-
-
-    return devine;
-
-}
-
-
-
-// ==========================================================
-// СКОРРЕКТИРОВАННАЯ МАССА
-// ==========================================================
-
-function calculateCorrectedWeight() {
-
-
-    let actualWeight =
-        Number(
-            document.getElementById("weight").value
-        );
-
-
-    let idealWeight =
-        calculateIdealWeight();
-
-
-    let corrected =
-
-        idealWeight +
-
-        0.4 *
-        (actualWeight - idealWeight);
-
-
-    return corrected;
-
-}
-
-
-
-// ==========================================================
-// ПОЛУЧЕНИЕ МАССЫ
-// ==========================================================
-
-function getPatientWeights() {
-
-
-    let actualWeight =
-        Number(
-            document.getElementById("weight").value
-        );
-
-
-    if (!actualWeight || actualWeight <= 0) {
-
-        return null;
-
-    }
-
-
-    let correctedWeight =
-        calculateCorrectedWeight();
-
-
-    if (
-        !correctedWeight ||
-        correctedWeight <= 0
-    ) {
-
-        correctedWeight =
-            actualWeight;
-
-    }
 
 
     return {
 
-        actual:
-            actualWeight,
 
-        corrected:
-            correctedWeight
+        mifflin:
+
+            Math.round(earMifflin),
+
+
+
+        harris:
+
+            Math.round(earHarris),
+
+
+
+        min:
+
+            Math.round(
+                Math.min(
+                    earMifflin,
+                    earHarris
+                )
+            ),
+
+
+
+        max:
+
+            Math.round(
+                Math.max(
+                    earMifflin,
+                    earHarris
+                )
+            )
 
     };
+
 
 }
 
 
 
+
+
 // ==========================================================
-// РАСЧЁТ ЭНЕРГИИ
+// ЭНЕРГЕТИЧЕСКАЯ ЦЕННОСТЬ С УЧЁТОМ ЦЕЛИ
+// ==========================================================
+//
+// Сначала получаем EAR диапазон.
+//
+// Затем:
+// дефицит = процент от EAR.
+//
+// Например:
+// EAR 1600-1800
+//
+// 15%:
+// дефицит 240-270 ккал
+//
+// итог:
+// 1360-1530 ккал
 // ==========================================================
 
-function calculateCalories(
-    goal,
-    patientCategory
-) {
+
+function calculateEnergy(goal) {
 
 
     let mode =
         consultationModes[goal];
 
 
+
     if (!mode) {
+
 
         mode =
             consultationModes.maintain;
 
-    }
-
-
-    let weights =
-        getPatientWeights();
-
-
-    if (!weights) {
-
-        return null;
 
     }
 
 
-    // ------------------------------------------------------
-    // EAR по скорректированной массе
-    // ------------------------------------------------------
 
-    let EARCorrected =
-        calculateEARForWeight(
-            weights.corrected
+    let EAR =
+        calculateEAR();
+
+
+
+
+    let deficitMin =
+
+        EAR.min *
+        mode.reduction;
+
+
+
+    let deficitMax =
+
+        EAR.max *
+        mode.reduction;
+
+
+
+
+    let increaseMin =
+
+        EAR.min *
+        mode.increase;
+
+
+
+    let increaseMax =
+
+        EAR.max *
+        mode.increase;
+
+
+
+
+
+    let caloriesMin =
+
+        EAR.min -
+        deficitMin +
+        increaseMin;
+
+
+
+    let caloriesMax =
+
+        EAR.max -
+        deficitMax +
+        increaseMax;
+
+
+
+
+
+    return {
+
+
+        EARmin:
+
+            EAR.min,
+
+
+        EARmax:
+
+            EAR.max,
+
+
+
+        deficitMin:
+
+            Math.round(deficitMin),
+
+
+
+        deficitMax:
+
+            Math.round(deficitMax),
+
+
+
+        caloriesMin:
+
+            Math.round(caloriesMin),
+
+
+
+        caloriesMax:
+
+            Math.round(caloriesMax)
+
+    };
+
+
+}
+// ==========================================================
+// ИДЕАЛЬНАЯ МАССА
+// Формула Devine
+// ==========================================================
+
+
+function calculateIdealWeight() {
+
+
+    let heightCm =
+
+        Number(
+            document.getElementById("height")?.value
         );
 
 
-    // ------------------------------------------------------
-    // EAR по фактической массе
-    // ------------------------------------------------------
+    let gender =
 
-    let EARActual =
-        calculateEARForWeight(
-            weights.actual
-        );
+        document.getElementById("gender")?.value;
 
 
-    // ------------------------------------------------------
-    // Начальный диапазон
-    // ------------------------------------------------------
 
-    let baseMin =
-        Math.min(
-            EARCorrected,
-            EARActual
-        );
+    if (!heightCm) {
 
 
-    let baseMax =
-        Math.max(
-            EARCorrected,
-            EARActual
-        );
+        return 0;
 
-
-    // ------------------------------------------------------
-    // Дефицит
-    // ------------------------------------------------------
-
-    let reduction =
-        mode.reduction || 0;
-
-
-    let increase =
-        mode.increase || 0;
-
-
-    let caloriesMin;
-
-
-    let caloriesMax;
-
-
-    if (reduction > 0) {
-
-
-        caloriesMin =
-            baseMin *
-            (1 - reduction);
-
-
-        caloriesMax =
-            baseMax *
-            (1 - reduction);
 
     }
 
-    else if (increase > 0) {
 
 
-        caloriesMin =
-            baseMin *
-            (1 + increase);
+    let idealWeight;
 
 
-        caloriesMax =
-            baseMax *
-            (1 + increase);
+
+    if (gender === "male") {
+
+
+        idealWeight =
+
+            50 +
+            0.9 *
+            (heightCm - 152.4);
+
+
 
     }
 
     else {
 
 
-        caloriesMin =
-            baseMin;
+        idealWeight =
+
+            45.5 +
+            0.9 *
+            (heightCm - 152.4);
 
 
-        caloriesMax =
-            baseMax;
 
     }
+
+
+
+    return idealWeight;
+
+
+}
+
+
+
+
+
+// ==========================================================
+// СКОРРЕКТИРОВАННАЯ МАССА ТЕЛА
+//
+// Формула:
+// идеальная масса +
+// 0.4 × (фактическая - идеальная)
+// ==========================================================
+
+
+function calculateCorrectedWeight() {
+
+
+    let actualWeight =
+
+        Number(
+            document.getElementById("weight")?.value
+        );
+
+
+
+    let idealWeight =
+
+        calculateIdealWeight();
+
+
+
+    if (
+        !actualWeight ||
+        !idealWeight
+    ) {
+
+
+        return actualWeight;
+
+
+    }
+
+
+
+    let corrected =
+
+
+        idealWeight +
+
+        0.4 *
+
+        (
+            actualWeight -
+            idealWeight
+        );
+
+
+
+    return corrected;
+
+
+}
+
+
+
+
+
+// ==========================================================
+// ПОЛУЧЕНИЕ ДВУХ МАСС
+// Для расчёта белка
+// ==========================================================
+
+
+function getPatientWeights() {
+
+
+    let actual =
+
+
+        Number(
+            document.getElementById("weight")?.value
+        );
+
+
+
+    let corrected =
+
+
+        Number(
+            calculateCorrectedWeight()
+        );
+
+
+
+    if (!corrected) {
+
+
+        corrected = actual;
+
+
+    }
+
 
 
     return {
 
 
-        baseMin:
-            Math.round(baseMin),
+        actual: actual,
 
 
-        baseMax:
-            Math.round(baseMax),
+        corrected: corrected
 
-
-        correctedEAR:
-            Math.round(EARCorrected),
-
-
-        actualEAR:
-            Math.round(EARActual),
-
-
-        caloriesMin:
-            Math.round(caloriesMin),
-
-
-        caloriesMax:
-            Math.round(caloriesMax),
-
-
-        reduction:
-            reduction
 
     };
 
+
 }
+
+
 
 
 
 // ==========================================================
 // РАСЧЁТ БЕЛКА
+//
+// Белок считается:
+// 1. по фактической массе
+// 2. по скорректированной массе
+//
+// Врач выбирает значение из диапазона.
 // ==========================================================
 
-function calculateProtein(
-    patientCategory
-) {
+
+function calculateProtein(patientCategory) {
 
 
-    let rules =
-        clinicalRules[
-            patientCategory
-        ];
+    let rule =
+
+        nutritionRules[patientCategory];
 
 
-    if (!rules || !rules.protein) {
 
-        return null;
+    if (!rule) {
+
+
+        rule =
+            nutritionRules.healthy;
+
 
     }
+
 
 
     let weights =
+
         getPatientWeights();
 
 
-    if (!weights) {
 
-        return null;
-
-    }
-
-
-    let correctedWeight =
-        weights.corrected;
-
-
-    let actualWeight =
-        weights.actual;
-
-
-    let proteinLow =
-        rules.protein[0];
-
-
-    let proteinHigh =
-        rules.protein[1];
-
-
-    // ------------------------------------------------------
-    // 1. Скорректированная масса × нижняя норма
-    // ------------------------------------------------------
-
-    let correctedLow =
-
-        correctedWeight *
-        proteinLow;
-
-
-    // ------------------------------------------------------
-    // 2. Скорректированная масса × верхняя норма
-    // ------------------------------------------------------
-
-    let correctedHigh =
-
-        correctedWeight *
-        proteinHigh;
-
-
-    // ------------------------------------------------------
-    // 3. Фактическая масса × нижняя норма
-    // ------------------------------------------------------
-
-    let actualLow =
-
-        actualWeight *
-        proteinLow;
-
-
-    // ------------------------------------------------------
-    // 4. Фактическая масса × верхняя норма
-    // ------------------------------------------------------
-
-    let actualHigh =
-
-        actualWeight *
-        proteinHigh;
-
-
-    // ------------------------------------------------------
-    // Общие границы
-    // ------------------------------------------------------
 
     let proteinMin =
 
-        Math.min(
+        rule.protein[0];
 
-            correctedLow,
-
-            correctedHigh,
-
-            actualLow,
-
-            actualHigh
-
-        );
 
 
     let proteinMax =
 
-        Math.max(
+        rule.protein[1];
 
-            correctedLow,
 
-            correctedHigh,
 
-            actualLow,
 
-            actualHigh
 
-        );
+    // -------------------------------
+    // Фактическая масса
+    // -------------------------------
+
+
+    let actualLow =
+
+        weights.actual *
+        proteinMin;
+
+
+
+    let actualHigh =
+
+        weights.actual *
+        proteinMax;
+
+
+
+
+
+    // -------------------------------
+    // Скорректированная масса
+    // -------------------------------
+
+
+    let correctedLow =
+
+        weights.corrected *
+        proteinMin;
+
+
+
+    let correctedHigh =
+
+        weights.corrected *
+        proteinMax;
+
+
+
 
 
     return {
-
-
-        correctedWeight:
-            Math.round(correctedWeight),
-
-
-        actualWeight:
-            Math.round(actualWeight),
-
-
-        proteinLow:
-            proteinLow,
-
-
-        proteinHigh:
-            proteinHigh,
-
-
-        correctedLow:
-            Math.round(correctedLow),
-
-
-        correctedHigh:
-            Math.round(correctedHigh),
 
 
         actualLow:
+
             Math.round(actualLow),
 
 
+
         actualHigh:
+
             Math.round(actualHigh),
 
 
+
+        correctedLow:
+
+            Math.round(correctedLow),
+
+
+
+        correctedHigh:
+
+            Math.round(correctedHigh),
+
+
+
         min:
-            Math.round(proteinMin),
+
+            Math.round(
+                Math.min(
+                    actualLow,
+                    correctedLow
+                )
+            ),
+
 
 
         max:
-            Math.round(proteinMax)
+
+            Math.round(
+                Math.max(
+                    actualHigh,
+                    correctedHigh
+                )
+            )
+
 
     };
 
-}
-
-
-
-// ==========================================================
-// РАСЧЁТ КБЖУ
-// ==========================================================
-
-function calculateMacros(
-    goal,
-    patientCategory
-) {
-
-
-    let rules =
-        clinicalRules[
-            patientCategory
-        ];
-
-
-    if (!rules) {
-
-        rules =
-            clinicalRules.healthy;
-
-    }
-
-
-    // ------------------------------------------------------
-    // Энергия
-    // ------------------------------------------------------
-
-    let energy =
-        calculateCalories(
-            goal,
-            patientCategory
-        );
-
-
-    if (!energy) {
-
-        return null;
-
-    }
-
-
-    // ------------------------------------------------------
-    // Белок
-    // ------------------------------------------------------
-
-    let protein =
-        calculateProtein(
-            patientCategory
-        );
-
-
-    // ------------------------------------------------------
-    // ЖИРЫ
-    // ------------------------------------------------------
-
-    let fatPercent =
-        rules.fatPercent;
-
-
-    let fatMin =
-
-        (
-            energy.caloriesMin *
-            fatPercent /
-            100
-        ) / 9;
-
-
-    let fatMax =
-
-        (
-            energy.caloriesMax *
-            fatPercent /
-            100
-        ) / 9;
-
-
-    fatMin =
-        Math.round(fatMin);
-
-
-    fatMax =
-        Math.round(fatMax);
-
-
-    // ------------------------------------------------------
-    // УГЛЕВОДЫ
-    // ------------------------------------------------------
-
-    let carbsMin =
-        null;
-
-
-    let carbsMax =
-        null;
-
-
-    if (protein) {
-
-
-        let carbValues = [];
-
-
-        let caloriesValues = [
-
-            energy.caloriesMin,
-
-            energy.caloriesMax
-
-        ];
-
-
-        let proteinValues = [
-
-            protein.min,
-
-            protein.max
-
-        ];
-
-
-        for (
-            let i = 0;
-            i < caloriesValues.length;
-            i++
-        ) {
-
-
-            for (
-                let j = 0;
-                j < proteinValues.length;
-                j++
-            ) {
-
-
-                let calories =
-                    caloriesValues[i];
-
-
-                let proteinGrams =
-                    proteinValues[j];
-
-
-                let fatGrams =
-
-                    (
-                        calories *
-                        fatPercent /
-                        100
-                    ) / 9;
-
-
-                let carbohydrates =
-
-                    (
-                        calories -
-
-                        proteinGrams * 4 -
-
-                        fatGrams * 9
-
-                    ) / 4;
-
-
-                carbValues.push(
-                    carbohydrates
-                );
-
-            }
-
-        }
-
-
-        carbsMin =
-            Math.round(
-                Math.min(...carbValues)
-            );
-
-
-        carbsMax =
-            Math.round(
-                Math.max(...carbValues)
-            );
-
-    }
-
-
-    return {
-
-
-        energy:
-            energy,
-
-
-        protein:
-            protein,
-
-
-        fat: {
-
-            percent:
-                fatPercent,
-
-            min:
-                fatMin,
-
-            max:
-                fatMax
-
-        },
-
-
-        carbohydrates: {
-
-            min:
-                carbsMin,
-
-            max:
-                carbsMax
-
-        }
-
-    };
-
-}
-
-
-
-// ==========================================================
-// ИСТОРИЯ КОНСУЛЬТАЦИЙ
-// ==========================================================
-
-function showConsultation() {
-
-
-    let historyElement =
-        document.getElementById("history");
-
-
-    if (!historyElement) {
-
-        return;
-
-    }
-
-
-    if (
-        patient.consultations.length === 0
-    ) {
-
-
-        historyElement.innerHTML =
-
-            "История консультаций пока пустая";
-
-
-        return;
-
-    }
-
-
-    let text = "";
-
-
-    for (
-        let i = 0;
-        i < patient.consultations.length;
-        i++
-    ) {
-
-
-        let c =
-            patient.consultations[i];
-
-
-        text +=
-
-            "<b>Консультация " +
-            (i + 1) +
-            "</b><br>" +
-
-
-            "Дата: " +
-            c.date.toLocaleDateString() +
-            "<br>" +
-
-
-            "Вес: " +
-            c.weight +
-            " кг<br>" +
-
-
-            "Рост: " +
-            c.height +
-            " см<br>" +
-
-
-            "ИМТ: " +
-            c.bmi.toFixed(1) +
-            "<br>" +
-
-
-            "Талия: " +
-            c.waist +
-            " см<br>" +
-
-
-            "Бёдра: " +
-            c.hips +
-            " см<br>" +
-
-
-            "Плечо: " +
-            c.shoulders +
-            " см<br><br>";
-
-    }
-
-
-    historyElement.innerHTML =
-        text;
-
-}
-
-
-
-// ==========================================================
-// ПЕЧАТЬ КОНСУЛЬТАЦИИ
-// ==========================================================
-
-function printConsultation() {
-
-
-    let resultElement =
-        document.getElementById("result");
-
-
-    let resultText =
-        resultElement
-            ? resultElement.innerText
-            : "";
-
-
-    let report =
-
-        "NutriCalc\n" +
-
-        "Отчёт консультации\n\n" +
-
-        "Дата: " +
-
-        new Date().toLocaleDateString() +
-
-        "\n\n" +
-
-        resultText;
-
-
-    let win =
-        window.open("");
-
-
-    if (!win) {
-
-        return;
-
-    }
-
-
-    win.document.write(
-
-        "<pre style='font-family: Arial; white-space: pre-wrap;'>" +
-
-        report +
-
-        "</pre>"
-
-    );
-
-
-    win.print();
-
-}
-
-
-
-// ==========================================================
-// ГРАФИК — ПОКА ЗАГЛУШКА
-// ==========================================================
-
-function showGraph() {
-
-
-    alert(
-        "График ИМТ добавим следующим этапом"
-    );
 
 }

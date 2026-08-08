@@ -1275,907 +1275,82 @@ function calculateMacros(goal, patientCategory) {
 
 
 }
-// ==========================================================
+// =========================================================// ==========================================================
 // ГЛАВНАЯ ФУНКЦИЯ РАСЧЁТА
 // ==========================================================
-
 
 function calculateAll() {
 
 
+let bmiResult =
 
-    let bmiResult =
+    getBMI();
 
-        getBMI();
 
 
+let idealWeight =
 
-    let idealWeight =
+    calculateIdealWeight();
 
-        calculateIdealWeight();
 
 
+let correctedWeight =
 
-    let correctedWeight =
+    calculateCorrectedWeight();
 
-        calculateCorrectedWeight();
 
 
+let goal =
 
-    let goal =
+    document.getElementById("goal")?.value
 
+    ||
 
-        document.getElementById("goal")?.value
+    "maintain";
 
-        ||
 
-        "maintain";
 
+let patientCategory =
 
+    document.getElementById("patientCategory")?.value
 
-    let patientCategory =
+    ||
 
+    "healthy";
 
-        document.getElementById("patientCategory")?.value
 
-        ||
 
-        "healthy";
 
 
+let bmrMifflin =
 
+    calculateBMRMifflin();
 
 
-    let bmrMifflin =
 
-        calculateBMRMifflin();
+let bmrHarris =
 
+    calculateBMRHarris();
 
 
-    let bmrHarris =
 
-        calculateBMRHarris();
 
 
+let EAR =
 
+    calculateEAR();
 
-    let EAR =
 
-        calculateEAR();
 
 
 
+let macros =
 
-    let macros =
+    calculateMacros(
 
-        calculateMacros(
+        goal,
 
-            goal,
-
-            patientCategory
-
-        );
-
-
-
-
-
-
-    let result = "";
-
-
-
-
-
-    result +=
-
-        "<h3>Результаты консультации</h3>";
-
-
-
-
-
-    // ===============================
-    // ИМТ
-    // ===============================
-
-
-    result +=
-
-        "<b>ИМТ:</b> "
-
-        +
-
-        bmiResult.bmi.toFixed(1)
-
-        +
-
-        "<br>";
-
-
-
-    result +=
-
-        "<b>Категория:</b> "
-
-        +
-
-        bmiResult.category
-
-        +
-
-        "<br><br>";
-
-
-
-
-
-    // ===============================
-    // МАССА
-    // ===============================
-
-
-    result +=
-
-        "<b>Идеальная масса:</b> "
-
-        +
-
-        Math.round(idealWeight)
-
-        +
-
-        " кг<br>";
-
-
-
-    result +=
-
-        "<b>Скорректированная масса:</b> "
-
-        +
-
-        Math.round(correctedWeight)
-
-        +
-
-        " кг<br><br>";
-
-
-
-
-
-
-
-    // ===============================
-    // ОСНОВНОЙ ОБМЕН
-    // ===============================
-
-
-    result +=
-
-        "<b>BMR Миффлин:</b> "
-
-        +
-
-        Math.round(bmrMifflin)
-
-        +
-
-        " ккал/сут<br>";
-
-
-
-    result +=
-
-        "<b>BMR Харрис-Бенедикт:</b> "
-
-        +
-
-        Math.round(bmrHarris)
-
-        +
-
-        " ккал/сут<br><br>";
-
-
-
-
-
-
-
-    // ===============================
-    // EAR
-    // ===============================
-
-
-    result +=
-
-        "<b>EAR диапазон:</b> "
-
-        +
-
-        EAR.min
-
-        +
-
-        " - "
-
-        +
-
-        EAR.max
-
-        +
-
-        " ккал/сут<br>";
-
-
-
-    result +=
-
-        "(расчёт по двум формулам BMR и коэффициенту активности)<br><br>";
-
-
-
-
-
-
-
-    // ===============================
-    // ЭНЕРГИЯ
-    // ===============================
-
-
-    result +=
-
-        "<b>Дефицит энергии:</b> "
-
-        +
-
-        macros.energy.deficitMin
-
-        +
-
-        " - "
-
-        +
-
-        macros.energy.deficitMax
-
-        +
-
-        " ккал/сут<br>";
-
-
-
-    result +=
-
-        "<b>Итоговая энергетическая ценность:</b> "
-
-        +
-
-        macros.energy.caloriesMin
-
-        +
-
-        " - "
-
-        +
-
-        macros.energy.caloriesMax
-
-        +
-
-        " ккал/сут<br><br>";
-
-
-
-
-
-
-
-
-    // ===============================
-    // БЕЛОК
-    // ===============================
-
-
-    result +=
-
-        "<b>Белок:</b><br>";
-
-
-
-    result +=
-
-        "По фактической массе: "
-
-        +
-
-        macros.protein.actualLow
-
-        +
-
-        " - "
-
-        +
-
-        macros.protein.actualHigh
-
-        +
-
-        " г/сут<br>";
-
-
-
-    result +=
-
-        "По скорректированной массе: "
-
-        +
-
-        macros.protein.correctedLow
-
-        +
-
-        " - "
-
-        +
-
-        macros.protein.correctedHigh
-
-        +
-
-        " г/сут<br>";
-
-
-
-    result +=
-
-        "Итоговый диапазон белка: "
-
-        +
-
-        macros.protein.min
-
-        +
-
-        " - "
-
-        +
-
-        macros.protein.max
-
-        +
-
-        " г/сут<br><br>";
-
-
-
-
-
-
-
-
-    // ===============================
-    // ЖИРЫ
-    // ===============================
-
-
-    result +=
-
-        "<b>Жиры:</b> "
-
-        +
-
-        macros.fat.min
-
-        +
-
-        " - "
-
-        +
-
-        macros.fat.max
-
-        +
-
-        " г/сут<br>";
-
-
-
-    result +=
-
-        "(30% от энергетической ценности)<br><br>";
-
-
-
-
-
-
-
-
-    // ===============================
-    // УГЛЕВОДЫ
-    // ===============================
-
-
-    result +=
-
-        "<b>Углеводы:</b> "
-
-        +
-
-        macros.carbohydrates.min
-
-        +
-
-        " - "
-
-        +
-
-        macros.carbohydrates.max
-
-        +
-
-        " г/сут<br>";
-
-
-
-    result +=
-
-        "(остаток энергии после расчёта белков и жиров)";
-
-
-
-
-
-
-
-    document.getElementById("result").innerHTML = result;
-
-
-
-    saveConsultation();
-
-
-}
-// ==========================================================
-// РАСЧЁТ ИНДЕКСА МАССЫ ТЕЛА
-// ==========================================================
-
-
-function getBMI() {
-
-
-    let weight =
-
-        Number(
-            document.getElementById("weight")?.value
-        );
-
-
-
-    let heightCm =
-
-        Number(
-            document.getElementById("height")?.value
-        );
-
-
-
-    if (!weight || !heightCm) {
-
-
-        return {
-
-
-            bmi: 0,
-
-            category: "Нет данных"
-
-
-        };
-
-
-    }
-
-
-
-    let heightM =
-
-        heightCm / 100;
-
-
-
-    let bmi =
-
-        weight /
-        (heightM * heightM);
-
-
-
-
-    let category;
-
-
-
-    if (bmi < 18.5) {
-
-
-        category =
-
-            "Недостаточная масса тела";
-
-
-    }
-
-    else if (bmi < 25) {
-
-
-        category =
-
-            "Нормальная масса тела";
-
-
-    }
-
-    else if (bmi < 30) {
-
-
-        category =
-
-            "Избыточная масса тела";
-
-
-    }
-
-    else if (bmi < 35) {
-
-
-        category =
-
-            "Ожирение I степени";
-
-
-    }
-
-    else if (bmi < 40) {
-
-
-        category =
-
-            "Ожирение II степени";
-
-
-    }
-
-    else {
-
-
-        category =
-
-            "Ожирение III степени";
-
-
-    }
-
-
-
-
-
-    return {
-
-
-        bmi: bmi,
-
-        category: category
-
-
-    };
-
-
-}
-// ==========================================================
-// СОХРАНЕНИЕ КОНСУЛЬТАЦИИ В ИСТОРИЮ
-// ==========================================================
-
-
-function saveConsultation() {
-
-
-
-    let weight =
-
-        Number(
-            document.getElementById("weight")?.value
-        );
-
-
-
-    let height =
-
-        Number(
-            document.getElementById("height")?.value
-        );
-
-
-
-    let waist =
-
-        Number(
-            document.getElementById("waist")?.value
-        )
-        || "-";
-
-
-
-    let hips =
-
-        Number(
-            document.getElementById("hips")?.value
-        )
-        || "-";
-
-
-
-    let shoulder =
-
-        Number(
-            document.getElementById("shoulder")?.value
-        )
-        || "-";
-
-
-
-
-    let bmiResult =
-
-        getBMI();
-
-
-
-
-
-    let idealWeight =
-
-        calculateIdealWeight();
-
-
-
-
-
-    let correctedWeight =
-
-        calculateCorrectedWeight();
-
-
-
-
-
-    patient.height = height;
-
-
-
-
-
-    patient.consultations.push({
-
-
-
-        date:
-
-            new Date(),
-
-
-
-        weight:
-
-            weight,
-
-
-
-        height:
-
-            height,
-
-
-
-        waist:
-
-            waist,
-
-
-
-        hips:
-
-            hips,
-
-
-
-        shoulder:
-
-            shoulder,
-
-
-
-        bmi:
-
-            bmiResult.bmi,
-
-
-
-        bmiCategory:
-
-            bmiResult.category,
-
-
-
-        idealWeight:
-
-            idealWeight,
-
-
-
-        correctedWeight:
-
-            correctedWeight
-
-
-
-    });
-
-
-
-}
-
-
-
-
-
-// ==========================================================
-// ПРОСМОТР ИСТОРИИ
-// ==========================================================
-
-
-function showConsultation() {
-
-
-
-    let history = "";
-
-
-
-
-    if (
-        patient.consultations.length === 0
-    ) {
-
-
-
-        document.getElementById("history").innerHTML =
-
-            "История консультаций отсутствует";
-
-
-        return;
-
-
-    }
-
-
-
-
-
-    patient.consultations.forEach(
-
-        function(c, index) {
-
-
-
-            history +=
-
-
-
-                "<b>Консультация №" +
-
-                (index + 1) +
-
-                "</b><br>";
-
-
-
-            history +=
-
-                "Дата: " +
-
-                c.date.toLocaleDateString()
-
-                +
-
-                "<br>";
-
-
-
-            history +=
-
-                "Вес: " +
-
-                c.weight +
-
-                " кг<br>";
-
-
-
-            history +=
-
-                "ИМТ: " +
-
-                c.bmi.toFixed(1)
-
-                +
-
-                "<br>";
-
-
-
-            history +=
-
-                "Категория ИМТ: "
-
-                +
-
-                c.bmiCategory
-
-                +
-
-                "<br>";
-
-
-
-            history +=
-
-                "Талия: "
-
-                +
-
-                c.waist
-
-                +
-
-                " см<br>";
-
-
-
-            history +=
-
-                "Бёдра: "
-
-                +
-
-                c.hips
-
-                +
-
-                " см<br>";
-
-
-
-            history +=
-
-                "Плечо: "
-
-                +
-
-                c.shoulder
-
-                +
-
-                " см<br><br>";
-
-
-
-        }
+        patientCategory
 
     );
 
@@ -2183,7 +1358,1024 @@ function showConsultation() {
 
 
 
-    document.getElementById("history").innerHTML = history;
+let result = "";
+
+
+
+
+// ===============================
+// ИМТ
+// ===============================
+
+
+result +=
+
+"<h3>Результаты консультации</h3>";
+
+
+
+result +=
+
+"<b>ИМТ:</b> "
+
++
+
+bmiResult.bmi.toFixed(1)
+
++
+
+"<br>";
+
+
+
+result +=
+
+"<b>Категория ИМТ:</b> "
+
++
+
+bmiResult.category
+
++
+
+"<br><br>";
+
+
+
+
+// ===============================
+// МАССА ТЕЛА
+// ===============================
+
+
+result +=
+
+"<b>Идеальная масса:</b> "
+
++
+
+Math.round(idealWeight)
+
++
+
+" кг<br>";
+
+
+
+result +=
+
+"<b>Скорректированная масса:</b> "
+
++
+
+Math.round(correctedWeight)
+
++
+
+" кг<br><br>";
+
+
+
+
+// ===============================
+// ОСНОВНОЙ ОБМЕН
+// ===============================
+
+
+result +=
+
+"<b>BMR Миффлин:</b> "
+
++
+
+Math.round(bmrMifflin)
+
++
+
+" ккал/сут<br>";
+
+
+
+result +=
+
+"<b>BMR Харрис-Бенедикт:</b> "
+
++
+
+Math.round(bmrHarris)
+
++
+
+" ккал/сут<br><br>";
+
+
+
+
+
+// ===============================
+// EAR
+// ===============================
+
+
+result +=
+
+"<b>EAR диапазон:</b> "
+
++
+
+Math.round(EAR.min)
+
++
+
+" - "
+
++
+
+Math.round(EAR.max)
+
++
+
+" ккал/сут<br>";
+
+
+
+result +=
+
+"(расчёт по двум формулам основного обмена и активности)<br><br>";
+
+
+
+
+
+// ===============================
+// ЭНЕРГЕТИЧЕСКАЯ ЦЕННОСТЬ
+// ===============================
+
+
+result +=
+
+"<b>Энергетическая ценность рациона:</b> "
+
++
+
+Math.round(macros.energy.caloriesMin)
+
++
+
+" - "
+
++
+
+Math.round(macros.energy.caloriesMax)
+
++
+
+" ккал/сут<br>";
+
+
+
+result +=
+
+"<b>Коррекция по цели:</b> "
+
++
+
+goal
+
++
+
+"<br><br>";
+
+
+
+
+
+// ===============================
+// БЕЛОК
+// ===============================
+
+
+result +=
+
+"<b>Белок:</b><br>";
+
+
+
+result +=
+
+"По фактической массе тела: "
+
++
+
+macros.protein.actualLow
+
++
+
+" - "
+
++
+
+macros.protein.actualHigh
+
++
+
+" г/сут<br>";
+
+
+
+result +=
+
+"По скорректированной массе тела: "
+
++
+
+macros.protein.correctedLow
+
++
+
+" - "
+
++
+
+macros.protein.correctedHigh
+
++
+
+" г/сут<br>";
+
+
+
+result +=
+
+"Итоговый рекомендуемый диапазон: "
+
++
+
+macros.protein.min
+
++
+
+" - "
+
++
+
+macros.protein.max
+
++
+
+" г/сут<br><br>";
+
+
+
+
+
+// ===============================
+// ЖИРЫ
+// ===============================
+
+
+result +=
+
+"<b>Жиры:</b> "
+
++
+
+macros.fat.min
+
++
+
+" - "
+
++
+
+macros.fat.max
+
++
+
+" г/сут<br>";
+
+
+
+result +=
+
+"(30% энергетической ценности рациона)<br><br>";
+
+
+
+
+
+// ===============================
+// УГЛЕВОДЫ
+// ===============================
+
+
+result +=
+
+"<b>Углеводы:</b> "
+
++
+
+macros.carbohydrates.min
+
++
+
+" - "
+
++
+
+macros.carbohydrates.max
+
++
+
+" г/сут<br>";
+
+
+
+result +=
+
+"(остаток энергии после расчёта белков и жиров)";
+
+
+
+
+
+document.getElementById("result").innerHTML = result;
+
+
+
+
+
+// сохраняем полную консультацию
+
+saveConsultation({
+
+    bmi: bmiResult,
+
+    idealWeight: idealWeight,
+
+    correctedWeight: correctedWeight,
+
+    bmrMifflin: bmrMifflin,
+
+    bmrHarris: bmrHarris,
+
+    EAR: EAR,
+
+    macros: macros,
+
+    goal: goal,
+
+    patientCategory: patientCategory
+
+});
+
+
+}
+// ==========================================================
+// СОХРАНЕНИЕ КОНСУЛЬТАЦИИ В ИСТОРИЮ
+// ==========================================================
+
+function saveConsultation(data) {
+
+
+let weight =
+
+    Number(
+        document.getElementById("weight")?.value
+    );
+
+
+
+let height =
+
+    Number(
+        document.getElementById("height")?.value
+    );
+
+
+
+let waist =
+
+    document.getElementById("waist")?.value
+
+    ||
+
+    "-";
+
+
+
+let hips =
+
+    document.getElementById("hips")?.value
+
+    ||
+
+    "-";
+
+
+
+let shoulder =
+
+    document.getElementById("shoulder")?.value
+
+    ||
+
+    "-";
+
+
+
+
+
+patient.height = height;
+
+
+
+
+
+patient.consultations.push({
+
+
+
+    // дата консультации
+
+    date: new Date(),
+
+
+
+    // антропометрия
+
+    weight: weight,
+
+    height: height,
+
+    waist: waist,
+
+    hips: hips,
+
+    shoulder: shoulder,
+
+
+
+    // ИМТ
+
+    bmi:
+
+        data.bmi.bmi,
+
+
+    bmiCategory:
+
+        data.bmi.category,
+
+
+
+
+
+    // массы тела
+
+    idealWeight:
+
+        Math.round(data.idealWeight),
+
+
+
+    correctedWeight:
+
+        Math.round(data.correctedWeight),
+
+
+
+
+
+    // обмен
+
+    bmrMifflin:
+
+        Math.round(data.bmrMifflin),
+
+
+
+    bmrHarris:
+
+        Math.round(data.bmrHarris),
+
+
+
+
+
+    // EAR
+
+    EARmin:
+
+        Math.round(data.EAR.min),
+
+
+
+    EARmax:
+
+        Math.round(data.EAR.max),
+
+
+
+
+
+    // энергетическая ценность
+
+    caloriesMin:
+
+        Math.round(
+            data.macros.energy.caloriesMin
+        ),
+
+
+
+    caloriesMax:
+
+        Math.round(
+            data.macros.energy.caloriesMax
+        ),
+
+
+
+
+
+    // белок
+
+    proteinMin:
+
+        Math.round(
+            data.macros.protein.min
+        ),
+
+
+
+    proteinMax:
+
+        Math.round(
+            data.macros.protein.max
+        ),
+
+
+
+
+
+    // жиры
+
+    fatMin:
+
+        Math.round(
+            data.macros.fat.min
+        ),
+
+
+
+    fatMax:
+
+        Math.round(
+            data.macros.fat.max
+        ),
+
+
+
+
+
+    // углеводы
+
+    carbsMin:
+
+        Math.round(
+            data.macros.carbohydrates.min
+        ),
+
+
+
+    carbsMax:
+
+        Math.round(
+            data.macros.carbohydrates.max
+        ),
+
+
+
+
+
+    // дополнительные параметры
+
+    goal:
+
+        data.goal,
+
+
+
+    patientCategory:
+
+        data.patientCategory
+
+
+
+});
+
+
+}
+// ==========================================================
+// ПРОСМОТР ИСТОРИИ КОНСУЛЬТАЦИЙ
+// ==========================================================
+
+function showConsultation() {
+
+
+let history = "";
+
+
+
+
+if (
+    patient.consultations.length === 0
+) {
+
+
+    document.getElementById("history").innerHTML =
+
+        "История консультаций отсутствует";
+
+
+    return;
+
+
+}
+
+
+
+
+
+patient.consultations.forEach(
+
+function(c, index) {
+
+
+
+history +=
+
+
+"<h3>Консультация №" +
+
+(index + 1)
+
++
+
+"</h3>";
+
+
+
+history +=
+
+
+"Дата: "
+
++
+
+c.date.toLocaleDateString()
+
++
+
+"<br>";
+
+
+
+
+
+// ===============================
+// Антропометрия
+// ===============================
+
+
+history +=
+
+"<b>Антропометрия</b><br>";
+
+
+
+history +=
+
+"Рост: "
+
++
+
+c.height
+
++
+
+" см<br>";
+
+
+
+history +=
+
+"Вес: "
+
++
+
+c.weight
+
++
+
+" кг<br>";
+
+
+
+history +=
+
+"Талия: "
+
++
+
+c.waist
+
++
+
+" см<br>";
+
+
+
+history +=
+
+"Бёдра: "
+
++
+
+c.hips
+
++
+
+" см<br>";
+
+
+
+history +=
+
+"Плечо: "
+
++
+
+c.shoulder
+
++
+
+" см<br><br>";
+
+
+
+
+
+// ===============================
+// ИМТ
+// ===============================
+
+
+history +=
+
+"<b>ИМТ</b><br>";
+
+
+
+history +=
+
+c.bmi.toFixed(1)
+
++
+
+" — "
+
++
+
+c.bmiCategory
+
++
+
+"<br><br>";
+
+
+
+
+
+// ===============================
+// Масса тела
+// ===============================
+
+
+history +=
+
+"<b>Расчёт массы тела</b><br>";
+
+
+
+history +=
+
+"Идеальная масса: "
+
++
+
+c.idealWeight
+
++
+
+" кг<br>";
+
+
+
+history +=
+
+"Скорректированная масса: "
+
++
+
+c.correctedWeight
+
++
+
+" кг<br><br>";
+
+
+
+
+
+// ===============================
+// Энергия
+// ===============================
+
+
+history +=
+
+"<b>Энергетический обмен</b><br>";
+
+
+
+history +=
+
+"BMR Миффлин: "
+
++
+
+c.bmrMifflin
+
++
+
+" ккал<br>";
+
+
+
+history +=
+
+"BMR Харрис-Бенедикт: "
+
++
+
+c.bmrHarris
+
++
+
+" ккал<br>";
+
+
+
+history +=
+
+"EAR: "
+
++
+
+c.EARmin
+
++
+
+" - "
+
++
+
+c.EARmax
+
++
+
+" ккал/сут<br><br>";
+
+
+
+
+
+// ===============================
+// КБЖУ
+// ===============================
+
+
+history +=
+
+"<b>Рекомендованный рацион</b><br>";
+
+
+
+history +=
+
+"Энергия: "
+
++
+
+c.caloriesMin
+
++
+
+" - "
+
++
+
+c.caloriesMax
+
++
+
+" ккал<br>";
+
+
+
+history +=
+
+"Белок: "
+
++
+
+c.proteinMin
+
++
+
+" - "
+
++
+
+c.proteinMax
+
++
+
+" г<br>";
+
+
+
+history +=
+
+"Жиры: "
+
++
+
+c.fatMin
+
++
+
+" - "
+
++
+
+c.fatMax
+
++
+
+" г<br>";
+
+
+
+history +=
+
+"Углеводы: "
+
++
+
+c.carbsMin
+
++
+
+" - "
+
++
+
+c.carbsMax
+
++
+
+" г<br>";
+
+
+
+history +=
+
+"<hr>";
+
+
+
+}
+
+);
+
+
+
+
+
+document.getElementById("history").innerHTML = history;
 
 
 }

@@ -15,119 +15,237 @@
 
 </head>
 
+
 <body>
 
+
 <h1>NutriCalc</h1>
+
+
 
 <p>Вес (кг):</p>
 <input id="weight" type="number">
 
+
+
 <p>Рост (см):</p>
 <input id="height" type="number">
+
+
 
 <p>Возраст (годы):</p>
 <input id="age" type="number">
 
+
+
 <p>Пол:</p>
 
 <select id="gender">
-    <option value="female">Женщина</option>
-    <option value="male">Мужчина</option>
+
+    <option value="female">
+        Женщина
+    </option>
+
+    <option value="male">
+        Мужчина
+    </option>
+
 </select>
+
+
+
 
 <p>Талия (см):</p>
 <input id="waist" type="number">
 
+
+
 <p>Бёдра (см):</p>
 <input id="hips" type="number">
 
+
+
 <p>Плечо (см):</p>
-<input id="shoulders" type="number">
+<input id="shoulder" type="number">
+
+
+
+
 
 <p>Физическая активность:</p>
 
+
 <select id="activity">
 
-    <option value="1.2">Минимальная (сидячий образ жизни)</option>
 
-    <option value="1.375">Низкая (1–3 тренировки)</option>
+    <option value="1.2">
+        Минимальная (сидячий образ жизни)
+    </option>
 
-    <option value="1.55">Средняя (3–5 тренировок)</option>
 
-    <option value="1.725">Высокая (6–7 тренировок)</option>
+    <option value="1.375">
+        Низкая (1–3 тренировки)
+    </option>
 
-    <option value="1.9">Очень высокая</option>
+
+    <option value="1.55">
+        Средняя (3–5 тренировок)
+    </option>
+
+
+    <option value="1.725">
+        Высокая (6–7 тренировок)
+    </option>
+
+
+    <option value="1.9">
+        Очень высокая
+    </option>
+
 
 </select>
+
+
+
+
 
 <p>Цель консультации:</p>
 
+
 <select id="goal">
 
+
     <option value="maintain">
-        Поддержание веса
+        Поддержание массы тела
     </option>
 
-    <option value="weightLoss">
-        Снижение веса (-20%)
+
+    <option value="loss15">
+        Снижение веса (-15% от EAR)
     </option>
+
+
+    <option value="loss20">
+        Снижение веса (-20% от EAR)
+    </option>
+
 
     <option value="weightGain">
-        Набор веса
+        Набор массы тела
     </option>
 
+
 </select>
+
+
+
+
+
 
 <p>Категория пациента:</p>
 
+
 <select id="patientCategory">
 
-    <option value="healthy">Здоровый пациент</option>
 
-    <option value="obesity">Ожирение</option>
+    <option value="healthy">
+        Здоровый пациент
+    </option>
 
-    <option value="ckd">Хроническая болезнь почек</option>
 
-    <option value="dialysis">Гемодиализ</option>
+    <option value="obesity">
+        Ожирение
+    </option>
 
-    <option value="cirrhosis">Цирроз печени</option>
 
-    <option value="copd">ХОБЛ</option>
+    <option value="ckd">
+        Хроническая болезнь почек
+    </option>
 
-    <option value="pregnancy">Беременность</option>
 
-    <option value="lactation">Грудное вскармливание</option>
+    <option value="dialysis">
+        Гемодиализ
+    </option>
+
+
+    <option value="cirrhosis">
+        Цирроз печени
+    </option>
+
+
+    <option value="copd">
+        ХОБЛ
+    </option>
+
+
+    <option value="pregnancy">
+        Беременность
+    </option>
+
+
+    <option value="lactation">
+        Грудное вскармливание
+    </option>
+
 
 </select>
 
+
+
 <br><br>
+
+
 
 <button onclick="calculateAll()">
     Рассчитать
 </button>
 
+
 <button onclick="showConsultation()">
     История
 </button>
 
+
 <button onclick="showGraph()">
     График
 </button>
+
+
+
 <button onclick="createWordReport()">
-Скачать консультацию Word
+    Скачать консультацию Word
 </button>
 
 
-<h2>Результаты</h2>
+
+
+
+<h2>
+Результаты
+</h2>
+
 
 <div id="result"></div>
 
-<h2>История консультаций</h2>
+
+
+
+<h2>
+История консультаций
+</h2>
+
 
 <div id="history"></div>
 
+
+
+
+
 <script src="script.js"></script>
+
 <script src="word.js"></script>
+
+
 </body>
 
 </html>

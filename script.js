@@ -1740,3 +1740,139 @@ function calculateAll() {
 
 
 }
+// ==========================================================
+// РАСЧЁТ ИНДЕКСА МАССЫ ТЕЛА
+// ==========================================================
+
+
+function getBMI() {
+
+
+    let weight =
+
+        Number(
+            document.getElementById("weight")?.value
+        );
+
+
+
+    let heightCm =
+
+        Number(
+            document.getElementById("height")?.value
+        );
+
+
+
+    if (!weight || !heightCm) {
+
+
+        return {
+
+
+            bmi: 0,
+
+            category: "Нет данных"
+
+
+        };
+
+
+    }
+
+
+
+    let heightM =
+
+        heightCm / 100;
+
+
+
+    let bmi =
+
+        weight /
+        (heightM * heightM);
+
+
+
+
+    let category;
+
+
+
+    if (bmi < 18.5) {
+
+
+        category =
+
+            "Недостаточная масса тела";
+
+
+    }
+
+    else if (bmi < 25) {
+
+
+        category =
+
+            "Нормальная масса тела";
+
+
+    }
+
+    else if (bmi < 30) {
+
+
+        category =
+
+            "Избыточная масса тела";
+
+
+    }
+
+    else if (bmi < 35) {
+
+
+        category =
+
+            "Ожирение I степени";
+
+
+    }
+
+    else if (bmi < 40) {
+
+
+        category =
+
+            "Ожирение II степени";
+
+
+    }
+
+    else {
+
+
+        category =
+
+            "Ожирение III степени";
+
+
+    }
+
+
+
+
+
+    return {
+
+
+        bmi: bmi,
+
+        category: category
+
+
+    };
+
+
+}

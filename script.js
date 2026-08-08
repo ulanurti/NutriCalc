@@ -1876,3 +1876,314 @@ function getBMI() {
 
 
 }
+// ==========================================================
+// СОХРАНЕНИЕ КОНСУЛЬТАЦИИ В ИСТОРИЮ
+// ==========================================================
+
+
+function saveConsultation() {
+
+
+
+    let weight =
+
+        Number(
+            document.getElementById("weight")?.value
+        );
+
+
+
+    let height =
+
+        Number(
+            document.getElementById("height")?.value
+        );
+
+
+
+    let waist =
+
+        Number(
+            document.getElementById("waist")?.value
+        )
+        || "-";
+
+
+
+    let hips =
+
+        Number(
+            document.getElementById("hips")?.value
+        )
+        || "-";
+
+
+
+    let shoulder =
+
+        Number(
+            document.getElementById("shoulder")?.value
+        )
+        || "-";
+
+
+
+
+    let bmiResult =
+
+        getBMI();
+
+
+
+
+
+    let idealWeight =
+
+        calculateIdealWeight();
+
+
+
+
+
+    let correctedWeight =
+
+        calculateCorrectedWeight();
+
+
+
+
+
+    patient.height = height;
+
+
+
+
+
+    patient.consultations.push({
+
+
+
+        date:
+
+            new Date(),
+
+
+
+        weight:
+
+            weight,
+
+
+
+        height:
+
+            height,
+
+
+
+        waist:
+
+            waist,
+
+
+
+        hips:
+
+            hips,
+
+
+
+        shoulder:
+
+            shoulder,
+
+
+
+        bmi:
+
+            bmiResult.bmi,
+
+
+
+        bmiCategory:
+
+            bmiResult.category,
+
+
+
+        idealWeight:
+
+            idealWeight,
+
+
+
+        correctedWeight:
+
+            correctedWeight
+
+
+
+    });
+
+
+
+}
+
+
+
+
+
+// ==========================================================
+// ПРОСМОТР ИСТОРИИ
+// ==========================================================
+
+
+function showConsultation() {
+
+
+
+    let history = "";
+
+
+
+
+    if (
+        patient.consultations.length === 0
+    ) {
+
+
+
+        document.getElementById("history").innerHTML =
+
+            "История консультаций отсутствует";
+
+
+        return;
+
+
+    }
+
+
+
+
+
+    patient.consultations.forEach(
+
+        function(c, index) {
+
+
+
+            history +=
+
+
+
+                "<b>Консультация №" +
+
+                (index + 1) +
+
+                "</b><br>";
+
+
+
+            history +=
+
+                "Дата: " +
+
+                c.date.toLocaleDateString()
+
+                +
+
+                "<br>";
+
+
+
+            history +=
+
+                "Вес: " +
+
+                c.weight +
+
+                " кг<br>";
+
+
+
+            history +=
+
+                "ИМТ: " +
+
+                c.bmi.toFixed(1)
+
+                +
+
+                "<br>";
+
+
+
+            history +=
+
+                "Категория ИМТ: "
+
+                +
+
+                c.bmiCategory
+
+                +
+
+                "<br>";
+
+
+
+            history +=
+
+                "Талия: "
+
+                +
+
+                c.waist
+
+                +
+
+                " см<br>";
+
+
+
+            history +=
+
+                "Бёдра: "
+
+                +
+
+                c.hips
+
+                +
+
+                " см<br>";
+
+
+
+            history +=
+
+                "Плечо: "
+
+                +
+
+                c.shoulder
+
+                +
+
+                " см<br><br>";
+
+
+
+        }
+
+    );
+
+
+
+
+
+    document.getElementById("history").innerHTML = history;
+
+
+}

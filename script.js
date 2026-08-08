@@ -1064,3 +1064,679 @@ function calculateProtein(patientCategory) {
 
 
 }
+// ==========================================================
+// РАСЧЁТ КБЖУ
+//
+// Энергия:
+// диапазон EAR после выбранной цели
+//
+// Белок:
+// фактическая + скорректированная масса
+//
+// Жиры:
+// 30% от итоговой энергии
+//
+// Углеводы:
+// остаток энергии
+// ==========================================================
+
+
+function calculateMacros(goal, patientCategory) {
+
+
+    let energy =
+
+        calculateEnergy(goal);
+
+
+
+    let protein =
+
+        calculateProtein(patientCategory);
+
+
+
+    let fatPercent =
+
+        nutritionRules[patientCategory]?.fatPercent || 30;
+
+
+
+
+    // ======================================================
+    // ЖИРЫ
+    // ======================================================
+
+
+    let fatMin =
+
+        (
+            energy.caloriesMin *
+            fatPercent /
+            100
+        ) / 9;
+
+
+
+    let fatMax =
+
+        (
+            energy.caloriesMax *
+            fatPercent /
+            100
+        ) / 9;
+
+
+
+
+
+    // ======================================================
+    // УГЛЕВОДЫ
+    //
+    // Нижняя граница:
+    // минимальная энергия +
+    // минимальный белок +
+    // жиры от минимальной энергии
+    //
+    // Верхняя граница:
+    // максимальная энергия +
+    // максимальный белок +
+    // жиры от максимальной энергии
+    // ======================================================
+
+
+
+    let carbMin =
+
+
+        (
+
+            energy.caloriesMin -
+
+            (
+                protein.min *
+                4
+            ) -
+
+            (
+                fatMin *
+                9
+            )
+
+        ) / 4;
+
+
+
+
+
+    let carbMax =
+
+
+        (
+
+            energy.caloriesMax -
+
+            (
+                protein.max *
+                4
+            ) -
+
+            (
+                fatMax *
+                9
+            )
+
+        ) / 4;
+
+
+
+
+
+
+
+    return {
+
+
+        energy: {
+
+
+            EARmin:
+
+                energy.EARmin,
+
+
+            EARmax:
+
+                energy.EARmax,
+
+
+            deficitMin:
+
+                energy.deficitMin,
+
+
+            deficitMax:
+
+                energy.deficitMax,
+
+
+            caloriesMin:
+
+                energy.caloriesMin,
+
+
+            caloriesMax:
+
+                energy.caloriesMax
+
+        },
+
+
+
+        protein: protein,
+
+
+
+        fat: {
+
+
+            percent: fatPercent,
+
+
+            min:
+
+                Math.round(fatMin),
+
+
+            max:
+
+                Math.round(fatMax)
+
+        },
+
+
+
+        carbohydrates: {
+
+
+            min:
+
+                Math.round(carbMin),
+
+
+            max:
+
+                Math.round(carbMax)
+
+        }
+
+
+    };
+
+
+}
+// ==========================================================
+// ГЛАВНАЯ ФУНКЦИЯ РАСЧЁТА
+// ==========================================================
+
+
+function calculateAll() {
+
+
+
+    let bmiResult =
+
+        getBMI();
+
+
+
+    let idealWeight =
+
+        calculateIdealWeight();
+
+
+
+    let correctedWeight =
+
+        calculateCorrectedWeight();
+
+
+
+    let goal =
+
+
+        document.getElementById("goal")?.value
+
+        ||
+
+        "maintain";
+
+
+
+    let patientCategory =
+
+
+        document.getElementById("patientCategory")?.value
+
+        ||
+
+        "healthy";
+
+
+
+
+
+    let bmrMifflin =
+
+        calculateBMRMifflin();
+
+
+
+    let bmrHarris =
+
+        calculateBMRHarris();
+
+
+
+
+    let EAR =
+
+        calculateEAR();
+
+
+
+
+    let macros =
+
+        calculateMacros(
+
+            goal,
+
+            patientCategory
+
+        );
+
+
+
+
+
+
+    let result = "";
+
+
+
+
+
+    result +=
+
+        "<h3>Результаты консультации</h3>";
+
+
+
+
+
+    // ===============================
+    // ИМТ
+    // ===============================
+
+
+    result +=
+
+        "<b>ИМТ:</b> "
+
+        +
+
+        bmiResult.bmi.toFixed(1)
+
+        +
+
+        "<br>";
+
+
+
+    result +=
+
+        "<b>Категория:</b> "
+
+        +
+
+        bmiResult.category
+
+        +
+
+        "<br><br>";
+
+
+
+
+
+    // ===============================
+    // МАССА
+    // ===============================
+
+
+    result +=
+
+        "<b>Идеальная масса:</b> "
+
+        +
+
+        Math.round(idealWeight)
+
+        +
+
+        " кг<br>";
+
+
+
+    result +=
+
+        "<b>Скорректированная масса:</b> "
+
+        +
+
+        Math.round(correctedWeight)
+
+        +
+
+        " кг<br><br>";
+
+
+
+
+
+
+
+    // ===============================
+    // ОСНОВНОЙ ОБМЕН
+    // ===============================
+
+
+    result +=
+
+        "<b>BMR Миффлин:</b> "
+
+        +
+
+        Math.round(bmrMifflin)
+
+        +
+
+        " ккал/сут<br>";
+
+
+
+    result +=
+
+        "<b>BMR Харрис-Бенедикт:</b> "
+
+        +
+
+        Math.round(bmrHarris)
+
+        +
+
+        " ккал/сут<br><br>";
+
+
+
+
+
+
+
+    // ===============================
+    // EAR
+    // ===============================
+
+
+    result +=
+
+        "<b>EAR диапазон:</b> "
+
+        +
+
+        EAR.min
+
+        +
+
+        " - "
+
+        +
+
+        EAR.max
+
+        +
+
+        " ккал/сут<br>";
+
+
+
+    result +=
+
+        "(расчёт по двум формулам BMR и коэффициенту активности)<br><br>";
+
+
+
+
+
+
+
+    // ===============================
+    // ЭНЕРГИЯ
+    // ===============================
+
+
+    result +=
+
+        "<b>Дефицит энергии:</b> "
+
+        +
+
+        macros.energy.deficitMin
+
+        +
+
+        " - "
+
+        +
+
+        macros.energy.deficitMax
+
+        +
+
+        " ккал/сут<br>";
+
+
+
+    result +=
+
+        "<b>Итоговая энергетическая ценность:</b> "
+
+        +
+
+        macros.energy.caloriesMin
+
+        +
+
+        " - "
+
+        +
+
+        macros.energy.caloriesMax
+
+        +
+
+        " ккал/сут<br><br>";
+
+
+
+
+
+
+
+
+    // ===============================
+    // БЕЛОК
+    // ===============================
+
+
+    result +=
+
+        "<b>Белок:</b><br>";
+
+
+
+    result +=
+
+        "По фактической массе: "
+
+        +
+
+        macros.protein.actualLow
+
+        +
+
+        " - "
+
+        +
+
+        macros.protein.actualHigh
+
+        +
+
+        " г/сут<br>";
+
+
+
+    result +=
+
+        "По скорректированной массе: "
+
+        +
+
+        macros.protein.correctedLow
+
+        +
+
+        " - "
+
+        +
+
+        macros.protein.correctedHigh
+
+        +
+
+        " г/сут<br>";
+
+
+
+    result +=
+
+        "Итоговый диапазон белка: "
+
+        +
+
+        macros.protein.min
+
+        +
+
+        " - "
+
+        +
+
+        macros.protein.max
+
+        +
+
+        " г/сут<br><br>";
+
+
+
+
+
+
+
+
+    // ===============================
+    // ЖИРЫ
+    // ===============================
+
+
+    result +=
+
+        "<b>Жиры:</b> "
+
+        +
+
+        macros.fat.min
+
+        +
+
+        " - "
+
+        +
+
+        macros.fat.max
+
+        +
+
+        " г/сут<br>";
+
+
+
+    result +=
+
+        "(30% от энергетической ценности)<br><br>";
+
+
+
+
+
+
+
+
+    // ===============================
+    // УГЛЕВОДЫ
+    // ===============================
+
+
+    result +=
+
+        "<b>Углеводы:</b> "
+
+        +
+
+        macros.carbohydrates.min
+
+        +
+
+        " - "
+
+        +
+
+        macros.carbohydrates.max
+
+        +
+
+        " г/сут<br>";
+
+
+
+    result +=
+
+        "(остаток энергии после расчёта белков и жиров)";
+
+
+
+
+
+
+
+    document.getElementById("result").innerHTML = result;
+
+
+
+    saveConsultation();
+
+
+}
